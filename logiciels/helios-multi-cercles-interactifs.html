@@ -1,1 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Helios Photonic Astral Intelligence</title>
+<meta name="description" content="Logiciel autonome héliosphotonique avec thème astral intégré, réflexion intelligente, micro-photons modélisés et flux centre ↔ centre." />
+<style>
+:root{
+  --bg0:#000106;
+  --bg1:#021022;
+  --cyan:#47f7ff;
+  --electric:#00a6ff;
+  --gold:#ffe257;
+  --pink:#ff3ecf;
+  --violet:#9b5cff;
+  --green:#65ff90;
+  --text:#f1fbff;
+  --muted:#a3cde4;
+  --line:rgba(146,236,255,.2);
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:var(--text);font-family:Inter,Arial,sans-serif}
+body{
+  background:
+    radial-gradient(circle at 50% 50%, rgba(0,180,255,.16), transparent 20%),
+    radial-gradient(circle at 50% 48%, rgba(255,62,207,.12), transparent 38%),
+    radial-gradient(circle at 50% 52%, rgba(101,255,144,.10), transparent 52%),
+    linear-gradient(135deg,#000106,#04101f 46%,#000105);
+}
+#app{position:fixed;inset:0;overflow:hidden}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1}
+.panel{pointer-events:auto}
+#leftPanel,#rightPanel,#legend{z-index:10}
+.panel{
+  position:absolute;z-index:5;border-radius:22px;background:linear-gradient(180deg,rgba(3,10,24,.86),rgba(1,5,14,.66));
+  border:1px solid var(--line);box-shadow:0 20px 70px rgba(0,0,0,.45), inset 0 0 44px rgba(71,247,255,.06);backdrop-filter:blur(12px);
+}
+#leftPanel{left:16px;top:16px;width:min(430px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;padding:16px}
+#leftPanel h1{margin:0 0 6px;font-size:15px;letter-spacing:.14em;text-transform:uppercase}
+#leftPanel p{margin:0 0 12px;color:var(--muted);font-size:12px;line-height:1.45}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.field{margin:8px 0}
+.field label,.control label{display:block;margin-bottom:5px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#d7f7ff}
+input,select,textarea{width:100%;border:1px solid rgba(147,236,255,.18);border-radius:13px;padding:9px 10px;background:rgba(0,7,18,.56);color:var(--text);outline:none;font-size:13px}
+input:focus,select:focus,textarea:focus{border-color:rgba(71,247,255,.68);box-shadow:0 0 0 3px rgba(71,247,255,.08)}
+textarea{min-height:64px;resize:vertical}
+.control{display:grid;grid-template-columns:120px 1fr 50px;gap:10px;align-items:center;margin:8px 0}
+.control output{font-size:11px;text-align:right;color:#fff;font-variant-numeric:tabular-nums}
+input[type="range"]{accent-color:#47f7ff;padding:0;border:0;background:transparent}
+.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button{border:1px solid rgba(147,236,255,.28);border-radius:999px;padding:9px 12px;color:#f5fdff;background:rgba(71,247,255,.08);cursor:pointer;font-size:12px;font-weight:700;transition:transform .15s ease,background .15s ease,border-color .15s ease}
+button:hover{transform:translateY(-1px);background:rgba(71,247,255,.16);border-color:rgba(147,236,255,.56)}
+button.gold{background:rgba(255,226,87,.10);border-color:rgba(255,226,87,.32)}
+#rightPanel{right:16px;top:16px;width:min(430px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;padding:16px}
+#rightPanel h2{margin:0 0 8px;font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+#summary,#reflection,#status{font-size:12px;line-height:1.55;color:#ddf3ff}
+#summary .badge{display:inline-flex;margin:4px 4px 0 0;padding:6px 8px;border-radius:999px;background:rgba(71,247,255,.08);border:1px solid rgba(147,236,255,.16);font-size:11px;color:#effbff}
+#status{margin-top:12px;padding:10px 12px;border-radius:14px;border:1px solid rgba(146,236,255,.16);background:rgba(0,7,18,.40)}
+#legend{position:absolute;right:16px;bottom:16px;z-index:5;max-width:min(470px,calc(100vw - 32px));padding:14px 16px;border-radius:18px;background:rgba(4,10,22,.54);border:1px solid rgba(160,235,255,.16);backdrop-filter:blur(10px);color:#d7f2ff;font-size:12px;line-height:1.5}
+#legend strong{color:#fff}
+.small{font-size:11px;color:#9bc6de;line-height:1.4}
+@media(max-width:1100px){#rightPanel{right:10px;bottom:10px;top:auto;max-height:34vh;width:calc(100vw - 20px)}#leftPanel{left:10px;top:10px;max-height:72vh;width:calc(100vw - 20px)}#legend{display:none}}
+@media(max-height:720px){#leftPanel{max-height:82vh}#rightPanel{display:none}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.control{grid-template-columns:96px 1fr 40px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="c"></canvas>
 
+  <aside id="leftPanel" class="panel">
+    <h1>Helios Photonic Astral Intelligence</h1>
+    <p>Version enrichie : <strong>thème astral intégré</strong>, <strong>réflexion intelligente</strong>, flux centre → rosaces → centre, et micro-photons représentés comme de petites versions du modèle principal.</p>
+
+    <div class="grid">
+      <div class="field"><label for="firstName">Prénom</label><input id="firstName" placeholder="Ex. Atefeh"></div>
+      <div class="field"><label for="lastName">Nom</label><input id="lastName" placeholder="Ex. Tafani"></div>
+    </div>
+    <div class="grid">
+      <div class="field"><label for="birthDate">Date naissance</label><input id="birthDate" type="date"></div>
+      <div class="field"><label for="birthTime">Heure naissance</label><input id="birthTime" type="time" value="12:00"></div>
+    </div>
+    <div class="field"><label for="birthPlace">Lieu naissance</label><input id="birthPlace" placeholder="Paris, Tehran, Marseille..."></div>
+    <div class="grid">
+      <div class="field"><label for="utcOffset">Fuseau UTC</label><select id="utcOffset"><option value="-8">UTC-8</option><option value="-5">UTC-5</option><option value="0">UTC</option><option value="1" selected>UTC+1</option><option value="2">UTC+2</option><option value="3.5">UTC+3:30</option><option value="4">UTC+4</option><option value="9">UTC+9</option></select></div>
+      <div class="field"><label for="lat">Latitude / Longitude</label><input id="latlon" placeholder="48.8566, 2.3522"></div>
+    </div>
+    <div class="field"><label for="question">Question de réflexion</label><textarea id="question" placeholder="Ex. Quel est mon axe de progression ? Comment mieux orienter mon énergie ?"></textarea></div>
+
+    <div class="control"><label for="density">Rosaces</label><input id="density" type="range" min="0" max="3" step="1" value="2"><output id="densityOut">dense</output></div>
+    <div class="control"><label for="speed">Vitesse</label><input id="speed" type="range" min="0.2" max="2.8" step="0.05" value="1.1"><output id="speedOut">1.10</output></div>
+    <div class="control"><label for="flux">Flux</label><input id="flux" type="range" min="0.4" max="2.8" step="0.05" value="1.25"><output id="fluxOut">1.25</output></div>
+    <div class="control"><label for="finesse">Finesse</label><input id="finesse" type="range" min="0.45" max="1.45" step="0.01" value="1.02"><output id="finesseOut">1.02</output></div>
+    <div class="control"><label for="contrast">Contraste</label><input id="contrast" type="range" min="0.8" max="2.0" step="0.05" value="1.55"><output id="contrastOut">1.55</output></div>
+    <div class="control"><label for="micro">Micro-photons</label><input id="micro" type="range" min="0.6" max="1.8" step="0.05" value="1.05"><output id="microOut">1.05</output></div>
+
+    <div class="buttons">
+      <button id="calcBtn" class="gold" type="button">Générer thème</button>
+      <button id="reflectBtn" class="gold" type="button">Réflexion IA</button>
+      <button id="fullscreenBtn" type="button">Plein écran</button>
+      <button id="exportBtn" type="button">Export PNG</button>
+      <button id="toggleUiBtn" type="button">Masquer UI</button>
+    </div>
+    <div id="status">Complète les données de naissance puis clique sur <strong>Générer thème</strong>. Correction incluse : tu peux écrire normalement, les raccourcis clavier sont désactivés pendant la saisie.</div>
+    <div class="small">Le calcul est visuel et symbolique. Pour une précision professionnelle stricte, connecter ultérieurement des éphémérides astronomiques certifiées.</div>
+  </aside>
+
+  <aside id="rightPanel" class="panel">
+    <h2>Lecture astrale</h2>
+    <div id="summary">Le résumé du thème apparaîtra ici.</div>
+    <h2 style="margin-top:14px">Intelligence réflexion</h2>
+    <div id="reflection">La réflexion intelligente apparaîtra ici après génération.</div>
+  </aside>
+
+  <div id="legend"><strong>Principe :</strong> le noyau central diffuse le flux dans les rosaces, les planètes et les axes de maisons sont projetés dans la roue, puis l’information revient vers le centre. <strong>L’intelligence de réflexion</strong> relit le thème pour produire un axe de compréhension et d’orientation.</div>
+</div>
+<script>
+(()=>{
+'use strict';
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d',{alpha:false});
+const app=document.getElementById('app');
+const leftPanel=document.getElementById('leftPanel');
+const rightPanel=document.getElementById('rightPanel');
+const legend=document.getElementById('legend');
+const summaryEl=document.getElementById('summary');
+const reflectionEl=document.getElementById('reflection');
+const statusEl=document.getElementById('status');
+const controls={
+  density:document.getElementById('density'), speed:document.getElementById('speed'), flux:document.getElementById('flux'), finesse:document.getElementById('finesse'),
+  contrast:document.getElementById('contrast'), micro:document.getElementById('micro'), densityOut:document.getElementById('densityOut'), speedOut:document.getElementById('speedOut'),
+  fluxOut:document.getElementById('fluxOut'), finesseOut:document.getElementById('finesseOut'), contrastOut:document.getElementById('contrastOut'), microOut:document.getElementById('microOut')
+};
+const fields={firstName:document.getElementById('firstName'),lastName:document.getElementById('lastName'),birthDate:document.getElementById('birthDate'),birthTime:document.getElementById('birthTime'),birthPlace:document.getElementById('birthPlace'),utcOffset:document.getElementById('utcOffset'),latlon:document.getElementById('latlon'),question:document.getElementById('question')};
+const glyphs=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+const TAU=Math.PI*2;
+const S={w:1,h:1,dpr:1,t:0,last:performance.now(),stars:[],modules:[],localPhotons:[],globalPhotons:[],paused:false,ui:true,layoutKey:'',theme:null};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const hue=d=>((d%360)+360)%360;
+const ang=d=>(d-90)*Math.PI/180;
+const norm=d=>((d%360)+360)%360;
+const degToRad=d=>d*Math.PI/180;
+const radToDeg=r=>r*180/Math.PI;
+const signs=[
+  ['Bélier','♈','initiative','besoin d’impulsion et d’action'],['Taureau','♉','stabilité','recherche d’ancrage et de continuité'],['Gémeaux','♊','mouvement mental','circulation d’idées et de contacts'],['Cancer','♋','mémoire','protection, sensibilité et profondeur intérieure'],['Lion','♌','rayonnement','affirmation créative et présence'],['Vierge','♍','précision','analyse, tri et amélioration'],['Balance','♎','harmonie','relation, équilibre et beauté'],['Scorpion','♏','transformation','intensité, vérité et mutation'],['Sagittaire','♐','expansion','vision, quête et élargissement'],['Capricorne','♑','structure','discipline, responsabilité et construction'],['Verseau','♒','innovation','originalité, réseau et futur'],['Poissons','♓','inspiration','intuition, imaginaire et compassion']
+];
+const planets=[['Soleil','☉','#ffe257'],['Lune','☽','#e8f7ff'],['Mercure','☿','#47f7ff'],['Vénus','♀','#65ff90'],['Mars','♂','#ff6d74'],['Jupiter','♃','#ffb04c'],['Saturne','♄','#f0df9c'],['Uranus','♅','#00d3ff'],['Neptune','♆','#9b5cff'],['Pluton','♇','#ff3ecf'],['Ascendant','AC','#ffffff']];
+const cityDB={paris:[48.8566,2.3522,1],montrouge:[48.8172,2.3219,1],marseille:[43.2965,5.3698,1],lyon:[45.7640,4.8357,1],nice:[43.7102,7.2620,1],toulouse:[43.6047,1.4442,1],bordeaux:[44.8378,-0.5792,1],lille:[50.6292,3.0573,1],nantes:[47.2184,-1.5536,1],rennes:[48.1173,-1.6778,1],strasbourg:[48.5734,7.7521,1],ajaccio:[41.9192,8.7386,1],tehran:[35.6892,51.3890,3.5],teheran:[35.6892,51.3890,3.5],téhéran:[35.6892,51.3890,3.5],london:[51.5072,-0.1276,0],newyork:[40.7128,-74.006,-5],tokyo:[35.6762,139.6503,9],dubai:[25.2048,55.2708,4]};
+
+function updateLabels(){
+  const names=['léger','organes','dense','max'];
+  controls.densityOut.textContent=names[+controls.density.value]||'dense';
+  controls.speedOut.textContent=(+controls.speed.value).toFixed(2);
+  controls.fluxOut.textContent=(+controls.flux.value).toFixed(2);
+  controls.finesseOut.textContent=(+controls.finesse.value).toFixed(2);
+  controls.contrastOut.textContent=(+controls.contrast.value).toFixed(2);
+  controls.microOut.textContent=(+controls.micro.value).toFixed(2);
+}
+
+function resize(){
+  S.dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1));
+  const box=app.getBoundingClientRect();
+  S.w=Math.max(320,box.width); S.h=Math.max(320,box.height);
+  canvas.width=Math.floor(S.w*S.dpr); canvas.height=Math.floor(S.h*S.dpr);
+  ctx.setTransform(S.dpr,0,0,S.dpr,0,0);
+  S.stars=Array.from({length:320},()=>({x:Math.random()*S.w,y:Math.random()*S.h,r:Math.random()*1.6+.12,a:Math.random()*.6+.04,h:180+Math.random()*180,p:Math.random()*TAU}));
+  buildLayout(true);
+}
+
+function makeModule(x,y,r,layer,idx){ return {x,y,r,layer,idx,phase:Math.random()*TAU,spin:(layer%2?-1:1)*(.012+Math.random()*.028),rot:(Math.random()-.5)*.09,h:hue(layer*68+idx*34+Math.random()*120),pulse:.55+Math.random()*.65}; }
+
+function buildLayout(force){
+  const density=+controls.density.value;
+  const key=[Math.round(S.w),Math.round(S.h),density].join('|');
+  if(!force && key===S.layoutKey)return;
+  S.layoutKey=key;
+  const cx=S.w/2, cy=S.h/2+Math.min(24,S.h*.025), R=Math.min(S.w,S.h)*.43;
+  const modules=[];
+  const outerCount=density>=3?16:(density>=2?12:(density>=1?8:6));
+  const outerOrbit=R*.47, outerR=R*(density>=2?.30:.34);
+  for(let i=0;i<outerCount;i++){ const a=-Math.PI/2+i*TAU/outerCount+(density>=2?TAU/outerCount*.5:0); modules.push(makeModule(cx+Math.cos(a)*outerOrbit,cy+Math.sin(a)*outerOrbit,outerR,0,i)); }
+  if(density>=1){ const midCount=density>=3?14:(density>=2?10:7), midOrbit=R*.285, midR=R*(density>=2?.215:.24); for(let i=0;i<midCount;i++){ const a=-Math.PI/2+i*TAU/midCount+TAU/(midCount*2); modules.push(makeModule(cx+Math.cos(a)*midOrbit,cy+Math.sin(a)*midOrbit,midR,1,i)); } }
+  const coreR=R*(density>=2?.132:.16); modules.push(makeModule(cx,cy,coreR*1.25,2,0));
+  for(let i=0;i<6;i++){ const a=-Math.PI/2+i*TAU/6; modules.push(makeModule(cx+Math.cos(a)*coreR*1.22,cy+Math.sin(a)*coreR*1.22,coreR,2,i+1)); }
+  if(density>=2){ for(let i=0;i<12;i++){ const a=-Math.PI/2+i*TAU/12+TAU/24; modules.push(makeModule(cx+Math.cos(a)*coreR*2.28,cy+Math.sin(a)*coreR*2.28,coreR*.86,3,i)); } }
+  if(density>=3){ for(let i=0;i<18;i++){ const a=-Math.PI/2+i*TAU/18; modules.push(makeModule(cx+Math.cos(a)*coreR*3.12,cy+Math.sin(a)*coreR*3.12,coreR*.54,4,i)); } }
+  S.modules=modules; seedPhotons();
+}
+
+function seedPhotons(){
+  S.localPhotons=[]; S.globalPhotons=[];
+  const flux=+controls.flux.value; const localCount=Math.floor(7+flux*5);
+  for(let mi=0;mi<S.modules.length;mi++){
+    const m=S.modules[mi];
+    for(let i=0;i<localCount;i++)S.localPhotons.push({module:mi,ang:Math.random()*360,phase:Math.random(),dir:Math.random()<.5?1:-1,speed:.18+Math.random()*.45,lane:.18+Math.random()*.72,h:hue(m.h+Math.random()*360),w:Math.random()*TAU,rot:Math.random()*TAU});
+  }
+  const globalCount=Math.floor(70+S.modules.length*1.55*flux); for(let i=0;i<globalCount;i++)spawnGlobalPhoton(true);
+}
+function spawnGlobalPhoton(randomStart=false){ const mi=(Math.random()*S.modules.length)|0; S.globalPhotons.push({module:mi,phase:randomStart?Math.random():0,speed:.16+Math.random()*.35,h:hue(S.modules[mi].h+Math.random()*360),width:.8+Math.random()*1.1,rot:Math.random()*TAU}); }
+
+function background(t){
+  const contrast=+controls.contrast.value;
+  const g=ctx.createRadialGradient(S.w*.5,S.h*.48,0,S.w*.5,S.h*.5,Math.max(S.w,S.h)*.76);
+  g.addColorStop(0,`rgba(8,30,58,${.92*contrast})`); g.addColorStop(.28,`rgba(4,17,34,${.95*contrast})`); g.addColorStop(.58,'#020913'); g.addColorStop(1,'#000105');
+  ctx.fillStyle=g; ctx.fillRect(0,0,S.w,S.h);
+  ctx.save(); ctx.globalCompositeOperation='lighter';
+  for(const st of S.stars){ ctx.fillStyle=`hsla(${st.h},100%,${74+Math.sin(t+st.p)*6}%,${st.a*(.7+.45*Math.sin(t*.85+st.p))*Math.min(1.2,contrast)})`; ctx.beginPath(); ctx.arc(st.x,st.y,st.r,0,TAU); ctx.fill(); }
+  ctx.restore();
+  const cx=S.w/2, cy=S.h/2+Math.min(24,S.h*.025), R=Math.min(S.w,S.h)*.44;
+  ctx.save(); ctx.globalCompositeOperation='screen';
+  const aura=ctx.createRadialGradient(cx,cy,0,cx,cy,R*1.42);
+  aura.addColorStop(0,`rgba(255,226,87,${.13*contrast})`); aura.addColorStop(.16,`rgba(71,247,255,${.16*contrast})`); aura.addColorStop(.34,`rgba(0,166,255,${.13*contrast})`); aura.addColorStop(.58,`rgba(101,255,144,${.12*contrast})`); aura.addColorStop(.78,`rgba(155,92,255,${.11*contrast})`); aura.addColorStop(.90,`rgba(255,62,207,${.10*contrast})`); aura.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=aura; ctx.beginPath(); ctx.arc(cx,cy,R*1.42,0,TAU); ctx.fill(); ctx.restore();
+}
+function clipGlobal(cx,cy,R){ ctx.beginPath(); ctx.arc(cx,cy,R*1.04,0,TAU); ctx.clip(); }
+
+function drawOuterWheel(cx,cy,R,t){
+  const contrast=+controls.contrast.value; ctx.save(); ctx.translate(cx,cy); ctx.rotate(t*.006); ctx.globalCompositeOperation='screen';
+  for(const rr of [1.02,1.055,1.088,1.115]){ ctx.strokeStyle=rr>1.08?`rgba(255,255,255,${.62*contrast})`:`rgba(177,236,255,${.28*contrast})`; ctx.lineWidth=rr>1.08?2.2:.9; ctx.beginPath(); ctx.arc(0,0,R*rr,0,TAU); ctx.stroke(); }
+  for(let d=0;d<360;d++){ const a=ang(d), major=d%30===0, ten=d%10===0, five=d%5===0; const from=R*(major?1.015:ten?1.032:five?1.045:1.055), to=R*(major?1.115:ten?1.105:five?1.095:1.085); ctx.strokeStyle=major?`rgba(255,255,255,${.86*contrast})`:ten?`hsla(${hue(d*1.2+t*24)},100%,76%,${.72*contrast})`:`rgba(235,250,255,${.30*contrast})`; ctx.lineWidth=major?2.4:ten?1.2:.55; ctx.beginPath(); ctx.moveTo(Math.cos(a)*from,Math.sin(a)*from); ctx.lineTo(Math.cos(a)*to,Math.sin(a)*to); ctx.stroke(); }
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  for(let d=0;d<360;d+=30){ const a=ang(d); ctx.save(); ctx.translate(Math.cos(a)*R*1.155,Math.sin(a)*R*1.155); ctx.rotate(a+Math.PI/2); ctx.font=`800 ${Math.max(18,R*.036)}px Inter,Arial,sans-serif`; ctx.fillStyle='rgba(248,252,255,.84)'; ctx.fillText(String(d),0,0); ctx.restore(); }
+  ctx.restore();
+}
+
+function drawThemeOverlay(cx,cy,R,t){
+  if(!S.theme)return;
+  const contrast=+controls.contrast.value;
+  ctx.save(); ctx.translate(cx,cy); ctx.globalCompositeOperation='lighter';
+  for(let i=0;i<S.theme.houses.length;i++){
+    const lon=S.theme.houses[i]; const a=ang(lon);
+    ctx.strokeStyle=i===0?`rgba(255,255,255,${.88*contrast})`:`rgba(214,244,255,${.28*contrast})`;
+    ctx.lineWidth=i===0?2.3:.8; ctx.beginPath(); ctx.moveTo(Math.cos(a)*R*.20,Math.sin(a)*R*.20); ctx.lineTo(Math.cos(a)*R*.84,Math.sin(a)*R*.84); ctx.stroke();
+  }
+  S.theme.placements.forEach((p,i)=>{
+    const a=ang(p.lon), rr=R*(.55+(i%4)*.07), x=Math.cos(a)*rr, y=Math.sin(a)*rr;
+    const glow=ctx.createRadialGradient(x,y,0,x,y,R*.06); glow.addColorStop(0,'rgba(255,255,255,.98)'); glow.addColorStop(.36,p.color); glow.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(x,y,R*.055,0,TAU); ctx.fill();
+    ctx.fillStyle=p.color; ctx.font=`800 ${Math.max(13,R*.034)}px Georgia,serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(p.glyph,x,y+1);
+    ctx.strokeStyle=`rgba(255,255,255,${.18*contrast})`; ctx.lineWidth=.7; ctx.beginPath(); ctx.moveTo(Math.cos(a)*R*.88,Math.sin(a)*R*.88); ctx.lineTo(x,y); ctx.stroke();
+  });
+  ctx.restore();
+}
+
+function drawRosace(m,t){
+  const f=+controls.finesse.value, contrast=+controls.contrast.value, R=m.r, local=t*(.62+m.pulse*.12)+m.phase, rot=local*m.spin*6+m.rot;
+  ctx.save(); ctx.translate(m.x,m.y); ctx.rotate(rot); ctx.globalCompositeOperation='screen';
+  const halo=ctx.createRadialGradient(0,0,0,0,0,R*1.1); halo.addColorStop(0,`hsla(${hue(m.h+local*28)},100%,82%,${.22*contrast})`); halo.addColorStop(.22,`hsla(${hue(m.h+65)},100%,78%,${.13*contrast})`); halo.addColorStop(.46,`hsla(${hue(m.h+145)},100%,72%,${.10*contrast})`); halo.addColorStop(.74,`hsla(${hue(m.h+235)},100%,68%,${.07*contrast})`); halo.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=halo; ctx.beginPath(); ctx.arc(0,0,R*1.1,0,TAU); ctx.fill();
+  const rings=Math.floor(36+R*.09*f); for(let i=1;i<=rings;i++){ const q=i/rings; ctx.strokeStyle=`hsla(${hue(m.h+q*340+local*22)},100%,${72+q*10}%,${(.042+q*.075)*contrast})`; ctx.lineWidth=.42*f; ctx.beginPath(); ctx.arc(0,0,R*q*.92,0,TAU); ctx.stroke(); }
+  const petals=12+(m.layer%3)*6; for(let p=0;p<petals;p++){ const a=p*TAU/petals, pr=R*(.50+.05*Math.sin(local+p)), ox=Math.cos(a)*R*.24, oy=Math.sin(a)*R*.24; ctx.strokeStyle=`hsla(${hue(m.h+p*360/petals+local*34)},100%,76%,${.20*contrast})`; ctx.lineWidth=.88*f; ctx.beginPath(); ctx.arc(ox,oy,pr*.78,0,TAU); ctx.stroke(); }
+  const rays=Math.floor(110*f); for(let i=0;i<rays;i++){ const d=i*(360/rays), a=ang(d+Math.sin(local*.85+d*.038)*8), amp=R*(.16+.66*(.55+.45*Math.sin(local+d*.045))); ctx.strokeStyle=`hsla(${hue(m.h+d*1.25+local*26)},100%,70%,${(.11+.08*Math.sin(d*.1+local))*contrast})`; ctx.lineWidth=.44*f; ctx.beginPath(); ctx.moveTo(0,0); for(let k=1;k<=34;k++){ const q=k/34, aa=a+q*q*2.4+Math.sin(q*TAU+local)*.05, rr=amp*q; ctx.lineTo(Math.cos(aa)*rr,Math.sin(aa)*rr); } ctx.stroke(); }
+  for(const rr of [.74,.86,.96]){ ctx.strokeStyle=rr>.9?`rgba(242,248,255,${.62*contrast})`:`rgba(220,244,255,${.24*contrast})`; ctx.lineWidth=rr>.9?1.2:.6; ctx.beginPath(); ctx.arc(0,0,R*rr,0,TAU); ctx.stroke(); }
+  for(let d=0;d<360;d+=2){ const a=ang(d), ten=d%10===0, from=R*(ten?.86:.91), to=R*(ten?.97:.95); ctx.strokeStyle=ten?`rgba(255,255,255,${.68*contrast})`:`rgba(235,250,255,${.24*contrast})`; ctx.lineWidth=ten?.76:.35; ctx.beginPath(); ctx.moveTo(Math.cos(a)*from,Math.sin(a)*from); ctx.lineTo(Math.cos(a)*to,Math.sin(a)*to); ctx.stroke(); }
+  const core=ctx.createRadialGradient(0,0,0,0,0,R*.23); core.addColorStop(0,'rgba(255,255,255,.98)'); core.addColorStop(.22,`hsla(${hue(m.h+local*46)},100%,74%,${.84*contrast})`); core.addColorStop(.76,`hsla(${hue(m.h+110)},100%,68%,${.22*contrast})`); core.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=core; ctx.beginPath(); ctx.arc(0,0,R*.23,0,TAU); ctx.fill(); ctx.restore();
+}
+
+function drawConnections(t){ const contrast=+controls.contrast.value; ctx.save(); ctx.globalCompositeOperation='lighter'; for(let i=0;i<S.modules.length;i++){ const a=S.modules[i]; for(let j=i+1;j<S.modules.length;j++){ const b=S.modules[j], dist=Math.hypot(a.x-b.x,a.y-b.y), limit=(a.r+b.r)*.72; if(dist<limit){ const alpha=(1-dist/limit)*.18*contrast; ctx.strokeStyle=`hsla(${hue((a.h+b.h)/2+t*34)},100%,78%,${alpha})`; ctx.lineWidth=.68; ctx.beginPath(); const mx=(a.x+b.x)/2+Math.sin(t+a.idx)*14, my=(a.y+b.y)/2+Math.cos(t+b.idx)*14; ctx.moveTo(a.x,a.y); ctx.quadraticCurveTo(mx,my,b.x,b.y); ctx.stroke(); } } } ctx.restore(); }
+function pathPoint(p0,p1,p2,p3,u){ return {x:(1-u)**3*p0.x+3*(1-u)**2*u*p1.x+3*(1-u)*u*u*p2.x+u**3*p3.x,y:(1-u)**3*p0.y+3*(1-u)**2*u*p1.y+3*(1-u)*u*u*p2.y+u**3*p3.y}; }
+
+function drawMiniPhotonModel(x,y,size,baseHue,time,alpha,rotation){
+  const contrast=+controls.contrast.value, s=size*(+controls.micro.value);
+  ctx.save(); ctx.translate(x,y); ctx.rotate(rotation+time*.6); ctx.globalCompositeOperation='lighter';
+  const halo=ctx.createRadialGradient(0,0,0,0,0,s*3.2); halo.addColorStop(0,`hsla(${hue(baseHue)},100%,80%,${alpha*.34*contrast})`); halo.addColorStop(.38,`hsla(${hue(baseHue+65)},100%,72%,${alpha*.16*contrast})`); halo.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=halo; ctx.beginPath(); ctx.arc(0,0,s*3.2,0,TAU); ctx.fill();
+  for(let i=1;i<=3;i++){ const q=i/3; ctx.strokeStyle=`hsla(${hue(baseHue+q*120+time*80)},100%,${74+q*8}%,${alpha*(.26+.06*q)*contrast})`; ctx.lineWidth=Math.max(.18,s*.16); ctx.beginPath(); ctx.arc(0,0,s*(.65+q*.95),0,TAU); ctx.stroke(); }
+  for(let p=0;p<6;p++){ const a=p*TAU/6, px=Math.cos(a)*s*.82, py=Math.sin(a)*s*.82; ctx.strokeStyle=`hsla(${hue(baseHue+p*45+time*100)},100%,78%,${alpha*.24*contrast})`; ctx.lineWidth=Math.max(.15,s*.12); ctx.beginPath(); ctx.arc(px,py,s*.82,0,TAU); ctx.stroke(); }
+  for(let r=0;r<8;r++){ const a=r*TAU/8; ctx.strokeStyle=`hsla(${hue(baseHue+r*22+time*120)},100%,76%,${alpha*.20*contrast})`; ctx.lineWidth=Math.max(.14,s*.10); ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(Math.cos(a)*s*1.7,Math.sin(a)*s*1.7); ctx.stroke(); }
+  const core=ctx.createRadialGradient(0,0,0,0,0,s*1.05); core.addColorStop(0,'rgba(255,255,255,.98)'); core.addColorStop(.28,`hsla(${hue(baseHue+20)},100%,82%,${alpha*.95*contrast})`); core.addColorStop(.70,`hsla(${hue(baseHue+120)},100%,70%,${alpha*.28*contrast})`); core.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=core; ctx.beginPath(); ctx.arc(0,0,s*.92,0,TAU); ctx.fill(); ctx.restore();
+}
+
+function drawGlobalFlux(cx,cy,R,t,rawDt){
+  const flux=+controls.flux.value, contrast=+controls.contrast.value; ctx.save(); ctx.globalCompositeOperation='lighter';
+  for(let i=S.globalPhotons.length-1;i>=0;i--){
+    const p=S.globalPhotons[i], m=S.modules[p.module]; if(!m){ S.globalPhotons.splice(i,1); continue; }
+    p.phase=(p.phase+rawDt*(.18+p.speed)*flux)%1; const outward=p.phase<.5; let u=outward?p.phase/.5:(1-(p.phase-.5)/.5); u=clamp(u,0,1);
+    const vx=m.x-cx, vy=m.y-cy, len=Math.hypot(vx,vy)||1, nx=vx/len, ny=vy/len, px=-ny, py=nx, endX=m.x-nx*m.r*.22, endY=m.y-ny*m.r*.22, curve=R*.08+Math.sin(t+p.module)*R*.02;
+    const c1={x:cx+vx*.28+px*curve,y:cy+vy*.28+py*curve}, c2={x:cx+vx*.72-px*curve*.75,y:cy+vy*.72-py*curve*.75}, p0={x:cx,y:cy}, p3={x:endX,y:endY};
+    ctx.strokeStyle=`hsla(${hue(p.h+t*18)},100%,78%,${.08*contrast})`; ctx.lineWidth=.48; ctx.beginPath(); ctx.moveTo(p0.x,p0.y); ctx.bezierCurveTo(c1.x,c1.y,c2.x,c2.y,p3.x,p3.y); ctx.stroke();
+    const pt=pathPoint(p0,c1,c2,p3,u), prev=pathPoint(p0,c1,c2,p3,clamp(u-.02,0,1)), trailHue=hue(p.h+t*64+u*180);
+    for(let layer=0;layer<3;layer++){ ctx.strokeStyle=`hsla(${hue(trailHue+layer*30)},100%,${78-layer*5}%,${(.30-layer*.065)*contrast})`; ctx.lineWidth=Math.max(.18,p.width*(1.12-layer*.22)); ctx.beginPath(); ctx.moveTo(prev.x,prev.y); ctx.lineTo(pt.x,pt.y); ctx.stroke(); }
+    drawMiniPhotonModel(pt.x,pt.y,1.55+p.width*1.45,trailHue,t,.78,p.rot+u*TAU);
+  }
+  const target=Math.floor(72+S.modules.length*1.65*flux); if(S.globalPhotons.length<target){ for(let k=0;k<4;k++)spawnGlobalPhoton(false); } if(S.globalPhotons.length>target+40)S.globalPhotons.splice(0,S.globalPhotons.length-(target+40)); ctx.restore();
+}
+function drawLocalFlux(t,rawDt){ const flux=+controls.flux.value, contrast=+controls.contrast.value; ctx.save(); ctx.globalCompositeOperation='lighter'; for(const p of S.localPhotons){ const m=S.modules[p.module]; if(!m)continue; const local=t*(.7+m.pulse*.12)+m.phase; p.phase+=rawDt*(.18+p.speed)*flux*p.dir; if(p.phase>=1){p.phase=1;p.dir=-1;} if(p.phase<=0){p.phase=0;p.dir=1;p.ang=(p.ang+92+Math.random()*50)%360;p.h=hue(m.h+Math.random()*360);p.rot=Math.random()*TAU;} const a=ang(p.ang+Math.sin(local+p.w)*9), rr=m.r*(.12+p.lane*.72*p.phase), x=m.x+Math.cos(a+local*.08)*rr, y=m.y+Math.sin(a+local*.08)*rr, tailR=m.r*(.12+p.lane*.72*clamp(p.phase-.04*p.dir,0,1)), tx=m.x+Math.cos(a+local*.08)*tailR, ty=m.y+Math.sin(a+local*.08)*tailR, alpha=.24+.44*(1-Math.abs(.5-p.phase)*2), tone=hue(p.h+t*72+p.phase*170); for(let layer=0;layer<2;layer++){ ctx.strokeStyle=`hsla(${hue(tone+layer*34)},100%,${80-layer*4}%,${alpha*(.34-layer*.08)*contrast})`; ctx.lineWidth=layer===0?.6:.26; ctx.beginPath(); ctx.moveTo(tx,ty); ctx.lineTo(x,y); ctx.stroke(); } drawMiniPhotonModel(x,y,1.18+m.r*.0068,tone,t,.66*alpha,p.rot+p.phase*TAU); } ctx.restore(); }
+
+function drawCentralSeal(cx,cy,R,t){ const contrast=+controls.contrast.value; ctx.save(); ctx.translate(cx,cy); ctx.globalCompositeOperation='screen'; const r=R*.265; for(let k=0;k<4;k++){ ctx.rotate((k%2?-1:1)*t*.018); const count=18+k*6; for(let i=0;i<count;i++){ const a=i*TAU/count, x=Math.cos(a)*r*(.46+k*.11), y=Math.sin(a)*r*(.46+k*.11); ctx.strokeStyle=`hsla(${hue(i*360/count+k*50+t*28)},100%,78%,${(.12+k*.04)*contrast})`; ctx.lineWidth=.72; ctx.beginPath(); ctx.arc(x,y,r*(.28-k*.025),0,TAU); ctx.stroke(); } } const core=ctx.createRadialGradient(0,0,0,0,0,r*.55); core.addColorStop(0,'rgba(255,255,255,.98)'); core.addColorStop(.24,`rgba(255,226,87,${.92*contrast})`); core.addColorStop(.56,`rgba(71,247,255,${.52*contrast})`); core.addColorStop(.84,`rgba(255,62,207,${.18*contrast})`); core.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=core; ctx.beginPath(); ctx.arc(0,0,r*.55,0,TAU); ctx.fill(); ctx.strokeStyle=`rgba(255,255,255,${.62*contrast})`; ctx.lineWidth=1.4; ctx.beginPath(); ctx.arc(0,0,r*1.13,0,TAU); ctx.stroke(); ctx.restore(); }
+function drawGlyphHalo(cx,cy,R,t){ ctx.save(); ctx.translate(cx,cy); ctx.rotate(-t*.004); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.globalCompositeOperation='lighter'; for(let i=0;i<12;i++){ const a=ang(i*30+15), x=Math.cos(a)*R*.92, y=Math.sin(a)*R*.92; ctx.font=`${Math.max(22,R*.05)}px Georgia,serif`; ctx.fillStyle=`hsla(${hue(i*30+t*22)},100%,78%,.58)`; ctx.fillText(glyphs[i],x,y); } ctx.restore(); }
+function drawGuard(cx,cy,R){ const contrast=+controls.contrast.value; ctx.save(); ctx.globalCompositeOperation='screen'; ctx.strokeStyle=`rgba(255,255,255,${.68*contrast})`; ctx.lineWidth=2.2; ctx.beginPath(); ctx.arc(cx,cy,R*1.025,0,TAU); ctx.stroke(); ctx.strokeStyle=`rgba(71,247,255,${.26*contrast})`; ctx.lineWidth=9; ctx.beginPath(); ctx.arc(cx,cy,R*1.035,0,TAU); ctx.stroke(); ctx.restore(); }
+
+function exportPNG(){ const a=document.createElement('a'); a.download='helios-photonic-astral-intelligence.png'; a.href=canvas.toDataURL('image/png'); a.click(); }
+function toggleUi(){ S.ui=!S.ui; leftPanel.style.display=S.ui?'block':'none'; rightPanel.style.display=S.ui?'block':'none'; legend.style.display=S.ui?'block':'none'; }
+
+function fullName(){ return [fields.firstName.value.trim(),fields.lastName.value.trim()].filter(Boolean).join(' ')||'Client Helios'; }
+function signIndex(lon){ return Math.floor(norm(lon)/30)%12; }
+function signDeg(lon){ return Math.floor(norm(lon)%30); }
+function posText(lon){ const s=signs[signIndex(lon)]; return `${s[1]} ${s[0]} ${signDeg(lon)}°`; }
+function dateToJD(dateStr,timeStr,utcOffset){ const [y,m,d]=dateStr.split('-').map(Number); const [hh,mm]=(timeStr||'12:00').split(':').map(Number); const utcMs=Date.UTC(y,m-1,d,hh,mm||0)-Number(utcOffset||0)*3600*1000; return utcMs/86400000+2440587.5; }
+function sunLongitude(n){ const L=norm(280.46646+0.98564736*n); const g=degToRad(norm(357.52911+0.98560028*n)); return norm(L+1.914602*Math.sin(g)+0.019993*Math.sin(2*g)+0.000289*Math.sin(3*g)); }
+function moonLongitude(n){ const L=norm(218.316+13.176396*n); const Mm=degToRad(norm(134.963+13.064993*n)); const D=degToRad(norm(297.850+12.190749*n)); return norm(L+6.289*Math.sin(Mm)+1.274*Math.sin(2*D-Mm)+0.658*Math.sin(2*D)+0.214*Math.sin(2*Mm)-0.186*Math.sin(degToRad(norm(357.529+0.98560028*n)))); }
+function planetApprox(n){ return {Mercure:norm(252.25+4.09233445*n+10*Math.sin(degToRad(n*.9))),Vénus:norm(181.98+1.60213034*n+5*Math.sin(degToRad(n*.42))),Mars:norm(355.43+0.52402068*n+7*Math.sin(degToRad(n*.19))),Jupiter:norm(34.35+0.08308529*n+3*Math.sin(degToRad(n*.07))),Saturne:norm(50.08+0.03344414*n+2.5*Math.sin(degToRad(n*.035))),Uranus:norm(314.05+0.01172834*n+1.2*Math.sin(degToRad(n*.012))),Neptune:norm(304.35+0.00598103*n+.9*Math.sin(degToRad(n*.006))),Pluton:norm(238.95+0.00396*n+.8*Math.sin(degToRad(n*.004)))}; }
+function ascendant(jd,lat,lon){ const n=jd-2451545.0, T=n/36525, gst=norm(280.46061837+360.98564736629*n+0.000387933*T*T-T*T*T/38710000), lst=norm(gst+lon), theta=degToRad(lst), phi=degToRad(lat), eps=degToRad(23.439291-0.0130042*T), asc=radToDeg(Math.atan2(-Math.cos(theta), Math.sin(theta)*Math.cos(eps)+Math.tan(phi)*Math.sin(eps))); return norm(asc); }
+function parsePlace(){
+  const place=fields.birthPlace.value.trim(); const raw=fields.latlon.value.trim(); let lat, lon; let exact=false; let offset=parseFloat(fields.utcOffset.value);
+  if(raw.includes(',')){ const parts=raw.split(',').map(v=>parseFloat(v.trim().replace(',','.'))); if(Number.isFinite(parts[0])&&Number.isFinite(parts[1])){ lat=parts[0]; lon=parts[1]; exact=true; } }
+  if(!Number.isFinite(lat)||!Number.isFinite(lon)){
+    const key=place.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'');
+    if(cityDB[key]){ lat=cityDB[key][0]; lon=cityDB[key][1]; offset=cityDB[key][2]; exact=true; fields.utcOffset.value=String(offset); }
+  }
+  if(!Number.isFinite(lat)||!Number.isFinite(lon)){
+    const key=place.toLowerCase(); let hash=0; for(const ch of key)hash=(hash*31+ch.charCodeAt(0))|0; lat=clamp(20+Math.abs(hash%5000)/100,-55,65); lon=((Math.abs(hash/97)%360)-180); exact=false;
+  }
+  return {place:place||'Lieu non renseigné',lat,lon,offset,exact};
+}
+function createTheme(){
+  if(!fields.birthDate.value){ statusEl.innerHTML='<span style="color:#ff9aa6">Date de naissance manquante.</span>'; return null; }
+  const place=parsePlace(); const jd=dateToJD(fields.birthDate.value,fields.birthTime.value||'12:00',place.offset); const n=jd-2451545.0;
+  const sun=sunLongitude(n), moon=moonLongitude(n), approx=planetApprox(n), asc=ascendant(jd,place.lat,place.lon);
+  const placements=[{name:'Soleil',glyph:'☉',lon:sun,color:'#ffe257'},{name:'Lune',glyph:'☽',lon:moon,color:'#e8f7ff'},{name:'Mercure',glyph:'☿',lon:approx.Mercure,color:'#47f7ff'},{name:'Vénus',glyph:'♀',lon:approx.Vénus,color:'#65ff90'},{name:'Mars',glyph:'♂',lon:approx.Mars,color:'#ff6d74'},{name:'Jupiter',glyph:'♃',lon:approx.Jupiter,color:'#ffb04c'},{name:'Saturne',glyph:'♄',lon:approx.Saturne,color:'#f0df9c'},{name:'Uranus',glyph:'♅',lon:approx.Uranus,color:'#00d3ff'},{name:'Neptune',glyph:'♆',lon:approx.Neptune,color:'#9b5cff'},{name:'Pluton',glyph:'♇',lon:approx.Pluton,color:'#ff3ecf'},{name:'Ascendant',glyph:'AC',lon:asc,color:'#ffffff'}];
+  const houses=Array.from({length:12},(_,i)=>norm(asc+i*30));
+  S.theme={name:fullName(),date:fields.birthDate.value,time:fields.birthTime.value||'12:00',place:place.place,lat:place.lat,lon:place.lon,offset:place.offset,exactPlace:place.exact,placements,houses,question:fields.question.value.trim()};
+  return S.theme;
+}
+function themeSummary(theme){
+  const sun=theme.placements.find(p=>p.name==='Soleil'), moon=theme.placements.find(p=>p.name==='Lune'), asc=theme.placements.find(p=>p.name==='Ascendant');
+  const ss=signs[signIndex(sun.lon)], ms=signs[signIndex(moon.lon)], as=signs[signIndex(asc.lon)];
+  const badges=`<span class="badge">Soleil ${posText(sun.lon)}</span><span class="badge">Lune ${posText(moon.lon)}</span><span class="badge">Ascendant ${posText(asc.lon)}</span>`;
+  const exact=theme.exactPlace?'':'<p><strong>Attention :</strong> lieu estimé ou non précis, ascendant indicatif.</p>';
+  const list=theme.placements.map(p=>`<tr><td style="padding:4px 6px;border-top:1px solid rgba(146,236,255,.12)">${p.glyph} ${p.name}</td><td style="padding:4px 6px;border-top:1px solid rgba(146,236,255,.12)">${posText(p.lon)}</td></tr>`).join('');
+  return `<p><strong>${theme.name}</strong><br>${theme.date} à ${theme.time} — ${theme.place}</p>${badges}<p><strong>Dominante solaire :</strong> ${ss[0]} — ${ss[3]}.</p><p><strong>Dominante lunaire :</strong> ${ms[0]} — ${ms[3]}.</p><p><strong>Apparence énergétique / Ascendant :</strong> ${as[0]} — ${as[3]}.</p><p><strong>Synthèse :</strong> le thème combine <em>${ss[2]}</em>, <em>${ms[2]}</em> et <em>${as[2]}</em>. Il montre comment l’élan, la mémoire intime et la stratégie d’apparition peuvent se coordonner.</p>${exact}<table style="width:100%;border-collapse:collapse;font-size:11px;margin-top:8px">${list}</table>`;
+}
+function generateReflection(theme){
+  const q=theme.question||'Quel est mon axe de progression ?';
+  const sun=theme.placements.find(p=>p.name==='Soleil'), moon=theme.placements.find(p=>p.name==='Lune'), asc=theme.placements.find(p=>p.name==='Ascendant');
+  const mercury=theme.placements.find(p=>p.name==='Mercure'), venus=theme.placements.find(p=>p.name==='Vénus'), mars=theme.placements.find(p=>p.name==='Mars');
+  const ss=signs[signIndex(sun.lon)], ms=signs[signIndex(moon.lon)], as=signs[signIndex(asc.lon)], me=signs[signIndex(mercury.lon)], ve=signs[signIndex(venus.lon)], ma=signs[signIndex(mars.lon)];
+  const axis=`Ton moteur profond cherche ${ss[3]}, tandis que ton monde intérieur cherche ${ms[3]}. L’Ascendant en ${as[0]} montre que l’énergie se présente au monde à travers ${as[2]}.`;
+  const mind=`Le mental, coloré par Mercure en ${me[0]}, favorise ${me[2]}. Cela indique que la réflexion est meilleure lorsqu’elle circule, compare, observe et reformule plutôt que lorsqu’elle se fige.`;
+  const heart=`Le rapport à l’attachement et au désir de beauté, porté par Vénus en ${ve[0]}, invite à ${ve[3]}. L’action, portée par Mars en ${ma[0]}, oriente la manière de trancher, d’oser et de défendre une direction.`;
+  const response=`<p><strong>Question :</strong> ${escapeHTML(q)}</p><p><strong>Axe de lecture :</strong> ${axis}</p><p><strong>Réflexion intelligente :</strong> ${mind} ${heart}</p><p><strong>Conseil d’orientation :</strong> pour avancer, il faut faire partir l’énergie du centre — ce qui t’anime réellement — puis la projeter vers l’action, avant de la faire revenir vers une analyse calme. Autrement dit : ressentir, tenter, observer, corriger, recentrer.</p><p><strong>Clé héliosphotonique :</strong> ton intelligence n’est pas linéaire ; elle fonctionne comme une rosace. Une idée naît au centre, s’étend par ramifications, puis revient enrichie. Plus tu respectes ce cycle, plus ta réflexion devient précise, cohérente et féconde.</p><p><strong>Formule pratique :</strong> "Je pars de mon noyau, j’explore le champ, puis je reviens avec une compréhension plus vaste."</p>`;
+  return response;
+}
+function escapeHTML(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function computeAndRenderTheme(){ const theme=createTheme(); if(!theme)return; summaryEl.innerHTML=themeSummary(theme); reflectionEl.innerHTML=generateReflection(theme); statusEl.innerHTML=`Thème généré pour <strong>${theme.name}</strong>. La roue astrale est intégrée au logiciel et la réflexion intelligente a été calculée.`; }
+function refreshReflection(){ if(!S.theme){ const theme=createTheme(); if(!theme)return; } S.theme.question=fields.question.value.trim(); reflectionEl.innerHTML=generateReflection(S.theme); statusEl.innerHTML='Réflexion intelligente mise à jour à partir du thème actuel.'; }
+
+function frame(now){
+  if(S.paused){ requestAnimationFrame(frame); return; }
+  const rawDt=Math.min(.05,(now-S.last)/1000||0.016); S.last=now; const speed=+controls.speed.value; S.t+=rawDt*speed; const t=S.t; const cx=S.w/2, cy=S.h/2+Math.min(24,S.h*.025), R=Math.min(S.w,S.h)*.43;
+  buildLayout(false); background(t); ctx.save(); clipGlobal(cx,cy,R*1.12); drawConnections(t); drawGlobalFlux(cx,cy,R,t,rawDt*speed); const ordered=[...S.modules].sort((a,b)=>b.r-a.r || a.layer-b.layer); for(const m of ordered)drawRosace(m,t); drawLocalFlux(t,rawDt*speed); drawCentralSeal(cx,cy,R,t); drawGlyphHalo(cx,cy,R,t); drawThemeOverlay(cx,cy,R,t); ctx.restore(); drawOuterWheel(cx,cy,R,t); drawGuard(cx,cy,R); requestAnimationFrame(frame);
+}
+
+controls.density.addEventListener('input',()=>{updateLabels();buildLayout(true);});
+controls.speed.addEventListener('input',updateLabels); controls.flux.addEventListener('input',()=>{updateLabels();seedPhotons();}); controls.finesse.addEventListener('input',updateLabels); controls.contrast.addEventListener('input',updateLabels); controls.micro.addEventListener('input',updateLabels);
+document.getElementById('calcBtn').addEventListener('click',computeAndRenderTheme); document.getElementById('reflectBtn').addEventListener('click',refreshReflection); document.getElementById('exportBtn').addEventListener('click',exportPNG); document.getElementById('toggleUiBtn').addEventListener('click',toggleUi); document.getElementById('fullscreenBtn').addEventListener('click',()=>{ if(!document.fullscreenElement)document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); });
+function isTypingTarget(target){
+  if(!target)return false;
+  const tag=(target.tagName||'').toLowerCase();
+  return tag==='input' || tag==='textarea' || tag==='select' || target.isContentEditable;
+}
+window.addEventListener('resize',resize);
+window.addEventListener('keydown',e=>{
+  // Correction importante : les raccourcis ne doivent jamais s'activer pendant la saisie.
+  // Avant, taper Atefeh, Paris, grossesse, etc. pouvait déclencher H/P/G/R et masquer l'interface.
+  if(isTypingTarget(e.target))return;
+  if(e.key===' '){S.paused=!S.paused; e.preventDefault();}
+  if(e.key.toLowerCase()==='h')toggleUi();
+  if(e.key.toLowerCase()==='p')exportPNG();
+  if(e.key.toLowerCase()==='g')computeAndRenderTheme();
+  if(e.key.toLowerCase()==='r')refreshReflection();
+});
+updateLabels(); resize(); requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
