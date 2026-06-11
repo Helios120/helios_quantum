@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Affiche HeliosAstro • Client</title>
+  <meta name="description" content="Affiche client HeliosAstro imprimable pour thèmes astraux, transits, révolution solaire et logiciels." />
+  <link rel="icon" href="assets/helios-logo.svg" />
+  <link rel="stylesheet" href="assets/site.css" />
+</head>
+
+<body>
+  <canvas class="stars noPrint" aria-hidden="true"></canvas>
+
+  <nav class="nav noPrint">
+    <div class="wrap navin">
+      <a class="brand" href="index.html">
+        <img src="assets/helios-logo.svg" alt="Logo Helios" />
+        <span>HELIOS<br><small>Astro • Photonic • CHLS9</small></span>
+      </a>
+
+      <div class="links">
+        <a href="index.html">Accueil</a>
+        <a href="heliosastro.html">HeliosAstro</a>
+        <a href="heliosphotonic.html">HeliosPhotonic</a>
+        <a href="livres.html">Livres</a>
+        <a href="chls9.html">CHLS9</a>
+        <a class="active" href="affiche.html">Affiche</a>
+        <a href="contact.html">Commande</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="section">
+    <div class="wrap">
+      <div class="poster">
+        <span class="eyebrow">HeliosAstro</span>
+        <h1 class="big">Votre thème astral devient lumière.</h1>
+
+        <div class="posterLine"></div>
+
+        <p class="lead">
+          Découvrez une lecture astrologique visuelle, immersive et personnalisée :
+          roue zodiacale, planètes, maisons, interprétations, flux colorés et export client.
+        </p>
+
+        <div class="priceRow">
+          <div class="priceBox">
+            <b>50 €</b>
+            Thème astral visuel
+          </div>
+
+          <div class="priceBox">
+            <b>25 €</b>
+            Transit 3 mois
+          </div>
+
+          <div class="priceBox">
+            <b>35 €</b>
+            Révolution solaire
+          </div>
+        </div>
+
+        <div class="posterLine"></div>
+
+        <div class="grid two">
+          <div>
+            <h3>Inclus</h3>
+            <div class="list">
+              <div>Roue astrale animée.</div>
+              <div>Planètes et maisons visibles.</div>
+              <div>Lecture personnalisée.</div>
+              <div>Export PDF / PNG / GIF selon formule.</div>
+            </div>
+          </div>
+
+          <div>
+            <h3>Pour commander</h3>
+            <p>
+              Envoyez votre prénom, nom, date, heure et lieu de naissance.
+              Une note personnelle peut être ajoutée pour orienter la lecture.
+            </p>
+            <p class="notice">Contact : contact@heliosastro.com</p>
+          </div>
+        </div>
+
+        <div class="actions noPrint">
+          <button class="btn solid" onclick="printPoster()">Imprimer / PDF</button>
+          <a class="btn gold" href="contact.html">Page commande</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/site.js"></script>
+</body>
+</html>
