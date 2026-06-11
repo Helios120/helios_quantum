@@ -2,163 +2,131 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>HeliosAstro • HeliosPhotonic • CHLS9</title>
-  <meta name="description" content="Portail professionnel HeliosAstro, HeliosPhotonic, livres et CHLS9. Thèmes astraux, logiciels photoniques, crypto vivante évolutive." />
-  <link rel="icon" href="assets/helios-logo.svg" />
+  <meta name="description" content="Site professionnel HeliosAstro, HeliosPhotonic, livres et CHLS9. Thèmes astraux visuels, logiciels photoniques, rosaces, crypto vivante évolutive." />
+
   <link rel="stylesheet" href="assets/site.css" />
 </head>
 
 <body>
-  <canvas class="stars" aria-hidden="true"></canvas>
+  <canvas id="helios-bg"></canvas>
 
-  <nav class="nav">
-    <div class="wrap navin">
-      <a class="brand" href="index.html">
-        <img src="assets/helios-logo.svg" alt="Logo Helios" />
-        <span>HELIOS<br><small>Astro • Photonic • CHLS9</small></span>
-      </a>
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="logo"></span>
+      <span>
+        Helios
+        <small>Astro • Photonic • CHLS9</small>
+      </span>
+    </a>
 
-      <div class="links">
-        <a class="active" href="index.html">Accueil</a>
-        <a href="heliosastro.html">HeliosAstro</a>
-        <a href="heliosphotonic.html">HeliosPhotonic</a>
-        <a href="livres.html">Livres</a>
-        <a href="chls9.html">CHLS9</a>
-        <a href="affiche.html">Affiche</a>
-        <a href="contact.html">Commande</a>
-      </div>
-    </div>
-  </nav>
-
-  <header class="hero">
-    <div class="wrap heroGrid">
-      <div>
-        <span class="eyebrow">Site final flamboyant • GitHub ready</span>
-        <h1>Le portail <span class="grad">Helios</span> pour vendre, montrer et faire tourner les logiciels.</h1>
-        <p class="lead">
-          Une vitrine client premium pour les thèmes astraux, les interactions HeliosPhotonic,
-          les livres et la crypto expérimentale CHLS9. Les logiciels restent intacts :
-          le site les encadre, les met en valeur et les rend vendables.
-        </p>
-
-        <div class="heroActions">
-          <a class="btn solid" href="heliosastro.html">Entrer dans HeliosAstro</a>
-          <a class="btn gold" href="affiche.html">Voir l’affiche client</a>
-          <a class="btn" href="logiciels/helios-astral-flux-payant.html" target="_blank" rel="noopener">Lancer le thème astral</a>
-        </div>
-      </div>
-
-      <div class="orbCard">
-        <img src="assets/helios-logo.svg" alt="Rosace Helios" />
-        <div class="orbText">
-          <strong>Positionnement</strong><br>
-          Astrologie visuelle, géométrie sacrée, flux 360°, interface immersive, export client et laboratoire photonique.
-        </div>
-      </div>
-    </div>
+    <nav>
+      <a href="index.html">Accueil</a>
+      <a href="heliosastro.html">HeliosAstro</a>
+      <a href="heliosphotonic.html">HeliosPhotonic</a>
+      <a href="livres.html">Livres</a>
+      <a href="chls9.html">CHLS9</a>
+      <a href="affiche.html">Affiche</a>
+      <a href="contact.html">Commande</a>
+    </nav>
   </header>
 
   <main>
-    <section class="section">
-      <div class="wrap sectionHead">
-        <div>
-          <h2>Architecture du site</h2>
-          <p>
-            Quatre univers séparés, une identité commune : HeliosAstro pour les clients,
-            HeliosPhotonic pour l’explication des interactions, Livres pour l’écosystème éditorial,
-            CHLS9 pour la branche crypto vivante évolutive.
-          </p>
+    <section class="hero">
+      <div class="heroText">
+        <p class="badge">Site final flamboyant • GitHub Pages</p>
+        <h1>HeliosAstro devient une expérience <span>photonique vivante</span>.</h1>
+        <p class="lead">
+          Un portail professionnel pour présenter les thèmes astraux, les logiciels HeliosPhotonic,
+          les livres et CHLS9 dans une interface immersive, commerciale et crédible.
+        </p>
+
+        <div class="actions">
+          <a class="btn primary" href="heliosastro.html">Entrer dans HeliosAstro</a>
+          <a class="btn gold" href="heliosphotonic.html">Voir HeliosPhotonic</a>
+          <a class="btn" href="logiciels/helios-astral-flux-payant.html" target="_blank">Lancer le logiciel</a>
         </div>
       </div>
 
-      <div class="wrap grid four">
+      <div class="heroOrb">
+        <div class="orbCore"></div>
+        <div class="orbCaption">
+          <strong>Wallpaper HeliosPhotonic</strong>
+          <p>Vortex, photons, rosaces, mémoire 360°, flux colorés et réseau vivant.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sectionTitle">
+        <p class="badge">Architecture</p>
+        <h2>Un site clair : vendre, expliquer, montrer, lancer.</h2>
+      </div>
+
+      <div class="cards four">
         <article class="card">
-          <div class="kpi">01</div>
+          <b>01</b>
           <h3>HeliosAstro</h3>
-          <p>Thème astral visuel, offres, interprétations, export, logiciels intégrés.</p>
-          <a class="btn" href="heliosastro.html">Voir</a>
+          <p>Page client pour les thèmes astraux, transits, révolution solaire et exports.</p>
+          <a class="btn small" href="heliosastro.html">Voir</a>
         </article>
 
         <article class="card">
-          <div class="kpi">02</div>
+          <b>02</b>
           <h3>HeliosPhotonic</h3>
-          <p>Modèles A/B, ponts, mémoire, rosaces, flux de photons et logique d’interaction.</p>
-          <a class="btn" href="heliosphotonic.html">Voir</a>
+          <p>Page laboratoire pour expliquer les interactions, flux, modèles A/B et rosaces.</p>
+          <a class="btn small" href="heliosphotonic.html">Voir</a>
         </article>
 
         <article class="card">
-          <div class="kpi">03</div>
+          <b>03</b>
           <h3>Livres</h3>
-          <p>Tome 1, Tome 2, géométrie sacrée, lumière, organes chromoluminiques.</p>
-          <a class="btn" href="livres.html">Voir</a>
+          <p>Présentation du Tome 1, du Tome 2 et de l’univers lumière / géométrie sacrée.</p>
+          <a class="btn small" href="livres.html">Voir</a>
         </article>
 
         <article class="card">
-          <div class="kpi">04</div>
+          <b>04</b>
           <h3>CHLS9</h3>
-          <p>ChromoHelios : actif Solana expérimental relié au laboratoire Helios.</p>
-          <a class="btn" href="chls9.html">Voir</a>
+          <p>Page crypto vivante évolutive reliée aux logiciels, à la communauté et au laboratoire.</p>
+          <a class="btn small" href="chls9.html">Voir</a>
         </article>
       </div>
     </section>
 
     <section class="section">
-      <div class="wrap sectionHead">
-        <div>
-          <h2>Logiciels repris en pièces jointes</h2>
-          <p>
-            Chaque outil est disponible en accès plein écran dans <span class="code">/logiciels</span>.
-            Les fichiers doivent être copiés tels quels. Pas de chirurgie sauvage dans le moteur.
-          </p>
-        </div>
+      <div class="sectionTitle">
+        <p class="badge">Logiciels intégrés</p>
+        <h2>Les moteurs Helios sont accessibles directement.</h2>
       </div>
 
-      <div class="wrap grid">
+      <div class="cards">
         <article class="card">
           <h3>Helios Astral Flux</h3>
-          <p>Thème astral client avec export PDF/PNG/GIF payant, coordonnées auto, planètes, maisons et interprétations.</p>
-          <a class="btn" href="logiciels/helios-astral-flux-payant.html" target="_blank" rel="noopener">Ouvrir en plein écran</a>
+          <p>Thème astral client, coordonnées, planètes, maisons, export PDF/PNG/GIF.</p>
+          <a class="btn gold" href="logiciels/helios-astral-flux-payant.html" target="_blank">Ouvrir</a>
         </article>
 
         <article class="card">
-          <h3>Fusion 360 — Cerveau vivant</h3>
-          <p>Thème astral animé, planètes visibles, maisons, mémoire 360°, micro, PNG et GIF.</p>
-          <a class="btn" href="logiciels/helios-fusion-theme-cerveau-gif.html" target="_blank" rel="noopener">Ouvrir en plein écran</a>
-        </article>
-
-        <article class="card">
-          <h3>Fusion 360 Dual — Immersion</h3>
-          <p>Deux modèles en interaction, intentions A/B, ponts photoniques, immersion, PNG et GIF.</p>
-          <a class="btn" href="logiciels/helios-fusion-dual-immersion.html" target="_blank" rel="noopener">Ouvrir en plein écran</a>
+          <h3>Fusion Dual Immersion</h3>
+          <p>Deux modèles en interaction, intentions A/B, ponts photoniques et immersion.</p>
+          <a class="btn gold" href="logiciels/helios-fusion-dual-immersion.html" target="_blank">Ouvrir</a>
         </article>
 
         <article class="card">
           <h3>Grande Rosace Vortex</h3>
-          <p>Grande rosace centrale, mini-logiciels sphériques, flux colorés, interactions photoniques.</p>
-          <a class="btn" href="logiciels/helios-grande-rosace-vortex.html" target="_blank" rel="noopener">Ouvrir en plein écran</a>
-        </article>
-
-        <article class="card">
-          <h3>Multi-cercles vivants</h3>
-          <p>Mandala multi-cercles, logiciels synchronisés, interactions, mémoire et photons.</p>
-          <a class="btn" href="logiciels/helios-multi-cercles-interactifs.html" target="_blank" rel="noopener">Ouvrir en plein écran</a>
+          <p>Grande rosace centrale, mini-logiciels sphériques et flux colorés 360°.</p>
+          <a class="btn gold" href="logiciels/helios-grande-rosace-vortex.html" target="_blank">Ouvrir</a>
         </article>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="wrap">
-      <div>
-        <strong>HeliosAstro / HeliosPhotonic</strong><br>
-        Site vitrine statique prêt pour GitHub Pages.
-      </div>
-      <div>
-        Astrologie visuelle, logiciels expérimentaux et univers CHLS9.<br>
-        <span class="code">/logiciels</span> conserve les logiciels originaux.
-      </div>
-    </div>
+  <footer>
+    <strong>HeliosAstro / HeliosPhotonic / CHLS9</strong>
+    <p>Site statique prêt pour GitHub Pages. Les logiciels sont dans le dossier <code>/logiciels</code>.</p>
   </footer>
 
   <script src="assets/site.js"></script>
