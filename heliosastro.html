@@ -2,136 +2,105 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>HeliosAstro • Thèmes astraux et logiciels</title>
-  <meta name="description" content="Page client HeliosAstro avec thème astral, offres, logiciels intégrés, export PDF, PNG et GIF." />
-  <link rel="icon" href="assets/helios-logo.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>HeliosAstro • Thèmes astraux visuels</title>
+  <meta name="description" content="HeliosAstro : thèmes astraux visuels, transits, révolution solaire, export PDF, PNG et GIF." />
+
   <link rel="stylesheet" href="assets/site.css" />
 </head>
 
 <body>
-  <canvas class="stars" aria-hidden="true"></canvas>
+  <canvas id="helios-bg"></canvas>
 
-  <nav class="nav">
-    <div class="wrap navin">
-      <a class="brand" href="index.html">
-        <img src="assets/helios-logo.svg" alt="Logo Helios" />
-        <span>HELIOS<br><small>Astro • Photonic • CHLS9</small></span>
-      </a>
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="logo"></span>
+      <span>Helios<small>Astro • Photonic • CHLS9</small></span>
+    </a>
 
-      <div class="links">
-        <a href="index.html">Accueil</a>
-        <a class="active" href="heliosastro.html">HeliosAstro</a>
-        <a href="heliosphotonic.html">HeliosPhotonic</a>
-        <a href="livres.html">Livres</a>
-        <a href="chls9.html">CHLS9</a>
-        <a href="affiche.html">Affiche</a>
-        <a href="contact.html">Commande</a>
-      </div>
-    </div>
-  </nav>
-
-  <header class="pageHero">
-    <div class="wrap">
-      <span class="eyebrow">HeliosAstro • client final</span>
-      <h1>Le thème astral devient une <span class="grad">expérience visuelle</span>.</h1>
-      <p class="lead">
-        Une page pensée pour les clients : naissance, coordonnées, roue astrale, planètes,
-        maisons, interprétations, exports et GIF payant. Le logiciel principal est intégré tel quel.
-      </p>
-
-      <div class="actions">
-        <a class="btn solid" href="logiciels/helios-astral-flux-payant.html" target="_blank" rel="noopener">Lancer le logiciel complet</a>
-        <a class="btn gold" href="contact.html">Commander</a>
-      </div>
-    </div>
+    <nav>
+      <a href="index.html">Accueil</a>
+      <a href="heliosastro.html">HeliosAstro</a>
+      <a href="heliosphotonic.html">HeliosPhotonic</a>
+      <a href="livres.html">Livres</a>
+      <a href="chls9.html">CHLS9</a>
+      <a href="affiche.html">Affiche</a>
+      <a href="contact.html">Commande</a>
+    </nav>
   </header>
 
   <main>
+    <section class="pageHero">
+      <p class="badge">HeliosAstro • client final</p>
+      <h1>Votre thème astral devient une <span>signature lumineuse</span>.</h1>
+      <p class="lead">
+        Une lecture astrologique visuelle avec roue zodiacale, planètes, maisons,
+        interprétations, flux colorés, export PDF, PNG et GIF.
+      </p>
+    </section>
+
     <section class="section">
-      <div class="wrap grid">
-        <article class="card">
+      <div class="cards">
+        <article class="price card">
+          <b>50 €</b>
           <h3>Thème astral visuel</h3>
-          <p>
-            Lecture personnalisée avec nom, prénom, date, heure, lieu de naissance,
-            planètes, maisons et synthèse.
-          </p>
-          <span class="tag">50 €</span>
-          <span class="tag">PDF / PNG / GIF</span>
+          <p>Carte personnalisée avec interprétation, planètes, maisons et export.</p>
         </article>
 
-        <article class="card">
+        <article class="price card">
+          <b>25 €</b>
           <h3>Transit 3 mois</h3>
-          <p>
-            Lecture dynamique pour comprendre les périodes, tensions, opportunités
-            et axes de mouvement.
-          </p>
-          <span class="tag">25 €</span>
-          <span class="tag">Suivi temporel</span>
+          <p>Lecture dynamique d’une période avec axes importants et mouvements.</p>
         </article>
 
-        <article class="card">
+        <article class="price card">
+          <b>35 €</b>
           <h3>Révolution solaire</h3>
-          <p>
-            Carte annuelle pour visualiser les thèmes forts d’une année personnelle.
-          </p>
-          <span class="tag">35 €</span>
-          <span class="tag">Année solaire</span>
+          <p>Carte annuelle pour comprendre les grands thèmes personnels de l’année.</p>
         </article>
       </div>
     </section>
 
     <section class="section">
-      <div class="wrap">
-        <div class="softwareFrame">
-          <div class="softwareToolbar">
-            <div>
-              <strong>Helios Astral Flux — Thème Astral Payant</strong><br>
-              <span>Logiciel original intégré sans modification du code.</span>
-            </div>
-            <a class="btn" href="logiciels/helios-astral-flux-payant.html" target="_blank" rel="noopener">Plein écran</a>
+      <div class="softwareBox">
+        <div class="softwareHeader">
+          <div>
+            <h2>Logiciel Helios Astral Flux</h2>
+            <p>Intégré dans le site sans modifier le moteur.</p>
           </div>
-          <iframe src="logiciels/helios-astral-flux-payant.html" title="Helios Astral Flux"></iframe>
+          <a class="btn gold" href="logiciels/helios-astral-flux-payant.html" target="_blank">Plein écran</a>
         </div>
+
+        <iframe src="logiciels/helios-astral-flux-payant.html" title="Helios Astral Flux"></iframe>
       </div>
     </section>
 
     <section class="section">
-      <div class="wrap sectionHead">
-        <div>
-          <h2>Autres logiciels HeliosAstro</h2>
-          <p>
-            Versions complémentaires pour la roue visible, le cerveau vivant, le GIF
-            et les multi-cercles.
-          </p>
-        </div>
+      <div class="sectionTitle">
+        <p class="badge">Autres versions HeliosAstro</p>
+        <h2>Versions animées complémentaires.</h2>
       </div>
 
-      <div class="wrap grid two">
+      <div class="cards two">
         <article class="card">
-          <h3>Fusion 360 — Cerveau vivant</h3>
-          <p>
-            Planètes visibles, maisons, intention, mémoire 360°, mode immersion, PNG et GIF.
-          </p>
-          <a class="btn" href="logiciels/helios-fusion-theme-cerveau-gif.html" target="_blank" rel="noopener">Ouvrir</a>
+          <h3>Cerveau vivant</h3>
+          <p>Thème astral animé avec vortex, mémoire 360°, planètes et maisons visibles.</p>
+          <a class="btn" href="logiciels/helios-fusion-theme-cerveau-gif.html" target="_blank">Ouvrir</a>
         </article>
 
         <article class="card">
           <h3>Multi-cercles interactifs</h3>
-          <p>
-            Mandala vivant, mini-logiciels synchronisés et interactions photoniques.
-          </p>
-          <a class="btn" href="logiciels/helios-multi-cercles-interactifs.html" target="_blank" rel="noopener">Ouvrir</a>
+          <p>Mandala vivant, logiciels synchronisés et interactions photoniques.</p>
+          <a class="btn" href="logiciels/helios-multi-cercles-interactifs.html" target="_blank">Ouvrir</a>
         </article>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="wrap">
-      <div><strong>HeliosAstro</strong><br>Thèmes astraux visuels et exports client.</div>
-      <div><span class="code">/logiciels</span> conserve les moteurs originaux.</div>
-    </div>
+  <footer>
+    <strong>HeliosAstro</strong>
+    <p>Thèmes astraux visuels et exports client.</p>
   </footer>
 
   <script src="assets/site.js"></script>
