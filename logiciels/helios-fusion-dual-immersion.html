@@ -1,1 +1,529 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HeliosAstro • Fusion 360 Dual • Photons Harmonieux</title>
+<style>
+:root{--cyan:#48f5ff;--gold:#ffd75a;--pink:#ff55cb;--green:#78ff9f;--violet:#9968ff;--orange:#ff9840;--text:#eaf8ff;--panel:rgba(3,10,22,.76)}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#01040a;color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+body{background:radial-gradient(circle at 50% 48%,rgba(25,90,180,.35),transparent 40%),radial-gradient(circle at 50% 50%,rgba(255,90,200,.08),transparent 58%),linear-gradient(135deg,#01030a,#06101d 48%,#010208)}
+#app{position:relative;width:100vw;height:100vh;overflow:hidden;touch-action:none;background:#020713}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.top{position:absolute;z-index:30;top:10px;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none}
+.top h1{margin:0;color:#ffd75a;font-weight:500;letter-spacing:.18em;font-size:20px;text-shadow:0 0 18px rgba(255,215,90,.45)}
+.top p{margin:5px 0 0;color:#89dcff;font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+.panel{position:absolute;z-index:20;border:1px solid rgba(80,210,255,.25);background:var(--panel);backdrop-filter:blur(14px);box-shadow:0 0 30px rgba(0,0,0,.55),inset 0 0 20px rgba(57,243,255,.035);border-radius:14px;color:#dffaff;overflow:auto}
+.left{left:14px;top:62px;width:310px;bottom:78px;padding:14px}
+.right{right:14px;top:62px;width:330px;bottom:78px;padding:14px}
+.bar{position:absolute;z-index:25;left:50%;bottom:14px;transform:translateX(-50%);min-height:50px;display:flex;gap:8px;align-items:center;padding:8px;border:1px solid rgba(80,210,255,.23);border-radius:16px;background:rgba(3,10,22,.70);backdrop-filter:blur(12px);flex-wrap:wrap;justify-content:center}
+h2{font-size:12px;margin:0 0 12px;color:#48f5ff;text-transform:uppercase;letter-spacing:.1em}
+.field{margin-bottom:11px}
+label{display:block;color:#9bc7d8;font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+input,textarea{width:100%;background:rgba(0,0,0,.22);border:1px solid rgba(72,245,255,.18);border-radius:9px;color:#eaf8ff;padding:10px;outline:none}
+input:focus,textarea:focus{border-color:rgba(72,245,255,.7);box-shadow:0 0 0 2px rgba(72,245,255,.08)}
+textarea{height:62px;resize:none}
+button{border:1px solid rgba(80,210,255,.28);background:rgba(4,16,32,.85);color:#dffaff;border-radius:10px;padding:10px 14px;cursor:pointer;text-transform:uppercase;font-weight:700;letter-spacing:.06em}
+button:hover{border-color:#48f5ff;box-shadow:0 0 18px rgba(72,245,255,.22)}
+button:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.stat{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid rgba(72,245,255,.12);padding:6px 0;font-size:12px}.stat b{color:#ffd75a;font-weight:700}
+.planet{display:flex;align-items:flex-start;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(72,245,255,.10);font-size:12px;gap:8px}.planet .leftcol{display:flex;align-items:center;gap:8px}.planet .glyph{font-size:18px}.planet b{color:#ffd75a;text-align:right}.planet small{display:block;color:#8fdfff;font-size:10px;margin-top:2px}
+.house{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,215,90,.12);font-size:12px;line-height:1.35}.house b{color:#ffd75a}.house .num{min-width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,215,90,.16);border:1px solid rgba(255,215,90,.35);color:#fff;font-weight:800}
+.block{padding:10px;border:1px solid rgba(72,245,255,.12);border-radius:12px;background:rgba(0,0,0,.15);margin-bottom:10px}
+.small{font-size:11px;color:#9bd2e8;line-height:1.45}
+.statusline{margin-top:8px;font-size:11px;color:#94eaff;line-height:1.4}.statusline strong{color:#ffd75a}
+.badge{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(72,245,255,.2);border-radius:999px;padding:6px 10px;font-size:11px;color:#94eaff;margin:4px 4px 0 0}
+.dualHeads{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.modelCard{padding:9px;border-radius:12px;border:1px solid rgba(72,245,255,.12);background:rgba(3,13,26,.4)}
+.modelCard h3{margin:0 0 7px;font-size:12px;color:#ffd75a;letter-spacing:.08em;text-transform:uppercase}
+.interactLine{font-size:12px;line-height:1.45;color:#d7f5ff}
+.interactLine b{color:#ffd75a}
 
+/* MODE IMMERSION : cache les panneaux, agrandit la scène et garde une sortie accessible */
+#app.immersive .top,
+#app.immersive .panel{opacity:0;pointer-events:none;transition:opacity .28s ease}
+#app.immersive .bar{opacity:.16;transition:opacity .25s ease;backdrop-filter:blur(8px)}
+#app.immersive .bar:hover{opacity:1}
+#app.immersive .bar button:not(#immersive):not(#full){display:none}
+#app.immersive canvas{filter:saturate(1.18) contrast(1.08)}
+#app.immersive #immersive{border-color:#48f5ff;color:#48f5ff;box-shadow:0 0 18px rgba(72,245,255,.32)}
+@media(max-width:1180px){.left{width:280px}.right{width:290px}}
+@media(max-width:980px){.right{display:none}.left{width:320px}}
+@media(max-width:720px){.left{width:calc(100vw - 20px);left:10px;top:60px;bottom:auto;max-height:56vh}.bar{right:10px;left:10px;transform:none;bottom:10px}.top h1{font-size:15px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="hud"></canvas>
+  <div class="top">
+    <h1>HELIOS ASTRO • HELIOPHOTONIC FUSION 360 • DUAL</h1>
+    <p>deux modèles similaires • interaction photonique • résonance cérébrale</p>
+  </div>
+
+  <section class="panel left">
+    <h2>Données communes</h2>
+    <div class="field"><label>Date</label><input id="date" type="date" value="1988-05-15"></div>
+    <div class="field"><label>Heure</label><input id="time" type="time" value="14:30"></div>
+    <div class="field"><label>Lieu</label><input id="place" value="Paris, France"></div>
+    <div class="field"><label>Décalage modèle B (degrés)</label><input id="offsetB" type="range" min="-90" max="90" value="24" step="1"><div class="statusline">Décalage actuel : <strong id="offsetOut">24°</strong></div></div>
+    <div class="grid3">
+      <button id="calc">Recalculer</button>
+      <button id="png">PNG</button>
+      <button id="gif">GIF</button>
+    </div>
+    <div id="exportStatus" class="statusline">Export disponible : <strong>PNG</strong> et <strong>GIF animé</strong>.</div>
+
+    <h2 style="margin-top:18px">Intentions</h2>
+    <div class="field"><label>Modèle A</label><textarea id="intentA">mémoire, analyse, conscience</textarea></div>
+    <div class="field"><label>Modèle B</label><textarea id="intentB">réponse, intuition, communication</textarea></div>
+    <div class="grid2">
+      <button id="encodeA">Encoder A</button>
+      <button id="encodeB">Encoder B</button>
+    </div>
+    <button id="sync" style="width:100%;margin-top:8px">Synchroniser les 2 modèles</button>
+
+    <h2 style="margin-top:18px">État vivant</h2>
+    <div class="stat">Mémoire A <b id="memA">4%</b></div>
+    <div class="stat">Mémoire B <b id="memB">4%</b></div>
+    <div class="stat">Réponse A <b id="respA">0%</b></div>
+    <div class="stat">Réponse B <b id="respB">0%</b></div>
+    <div class="stat">Flux inter-modèles <b id="linkFlux">0</b></div>
+    <div class="stat">Résonance globale <b id="resonance">0%</b></div>
+  </section>
+
+  <section class="panel right">
+    <h2>Lecture duale</h2>
+    <div id="summary"></div>
+    <h2 style="margin-top:18px">Planètes modèle A</h2>
+    <div id="planetListA"></div>
+    <h2 style="margin-top:18px">Planètes modèle B</h2>
+    <div id="planetListB"></div>
+    <h2 style="margin-top:18px">Maisons & interaction</h2>
+    <div id="houseList"></div>
+  </section>
+
+  <div class="bar">
+    <button id="pause">Pause</button>
+    <button id="burst">Burst</button>
+    <button id="bridge">Ponts</button>
+    <button id="brain">Cerveaux</button>
+    <button id="immersive">Immersion</button>
+    <button id="full">Plein écran</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gifshot@0.4.5/build/gifshot.min.js"></script>
+<script>
+(()=>{'use strict';
+function startApp(){
+const canvas=document.getElementById('hud'),ctx=canvas.getContext('2d',{alpha:false}),app=document.getElementById('app'),$=id=>document.getElementById(id);
+let dpr=Math.max(1,Math.min(2,devicePixelRatio||1));
+const glyphs=['♈︎','♉︎','♊︎','♋︎','♌︎','♍︎','♎︎','♏︎','♐︎','♑︎','♒︎','♓︎'],signs=['Bélier','Taureau','Gémeaux','Cancer','Lion','Vierge','Balance','Scorpion','Sagittaire','Capricorne','Verseau','Poissons'];
+const basePlanets=[['Soleil','☉',0,1,'#ffd75a'],['Lune','☽',38,13.2,'#48f5ff'],['Mercure','☿',82,4.1,'#37eaff'],['Vénus','♀',118,1.6,'#78ff9f'],['Mars','♂',152,.8,'#ff5548'],['Jupiter','♃',210,.20,'#ff9840'],['Saturne','♄',256,.09,'#ffd75a'],['Uranus','♅',300,.045,'#48f5ff'],['Neptune','♆',332,.025,'#9968ff'],['Pluton','♇',25,.016,'#ff55cb']];
+const houseKeywords=['identité','ressources','communication','foyer','créativité','travail','relation','mutation','vision','carrière','réseau','intuition'];
+const houseTexts=['apparence, départ, énergie personnelle','argent, sécurité, valeur concrète','parole, apprentissage, entourage proche','racines, foyer, mémoire familiale','amour, création, plaisir, enfants','quotidien, santé, méthode, service','couple, contrats, alliances','transformation, héritage, profondeur','voyage, philosophie, enseignement','vocation, statut, accomplissement','amis, projets, collectif','inconscient, spiritualité, retrait'];
+const planetMeaning={Soleil:'identité et rayonnement',Lune:'émotion et mémoire',Mercure:'mental et parole',Vénus:'amour et esthétique',Mars:'action et courage',Jupiter:'expansion et chance',Saturne:'structure et temps',Uranus:'innovation et rupture',Neptune:'intuition et mystère',Pluton:'transformation et puissance'};
+const S={w:1,h:1,t:0,last:performance.now(),run:true,showBridge:true,showBrain:true,stars:[],bridgePhotons:[],capturingGif:false,
+  modelA:createModel('A','Modèle A'), modelB:createModel('B','Modèle B'), resonance:0};
+
+function createModel(id,label){
+  return {id,label,stars:[],photons:[],learn:Array(360).fill(.04),response:0,energy:0,checksum:0,words:[],sunDeg:55,ascDeg:0,houses:[],planets:basePlanets.map(p=>p.slice()),intent:'',pulse:0};
+}
+function bind(id,eventName,handler){const el=$(id);if(!el){console.warn('Element UI manquant:',id);return false;}el.addEventListener(eventName,handler,false);return true;}
+const ang=d=>(d-90)*Math.PI/180, hue=d=>(d+360)%360, clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const avg=model=>model.learn.reduce((a,b)=>a+b,0)/360;
+function norm(deg){return ((deg%360)+360)%360}
+function degText(deg){let d=((deg%30)+30)%30,m=Math.floor((d%1)*60);return `${String(Math.floor(d)).padStart(2,'0')}°${String(m).padStart(2,'0')}'`}
+function signName(deg){return signs[Math.floor(norm(deg)/30)]}
+function signGlyph(deg){return glyphs[Math.floor(norm(deg)/30)]}
+function placeHash(str){let h=0;String(str||'').split('').forEach((ch,i)=>h=(h*31+ch.charCodeAt(0)+i*17)%100000);return h}
+function daysSince2000(date,time){let dt=new Date(`${date}T${time||'12:00'}:00`);return (dt-new Date('2000-01-01T12:00:00'))/86400000}
+function tropicalSunDeg(date){let [y,m,d]=date.split('-').map(Number);let md=[0,31,59,90,120,151,181,212,243,273,304,334][m-1]+d+(m>2&&((y%4===0&&y%100!==0)||y%400===0)?1:0);let starts=[80,110,141,172,204,235,266,296,326,356,21,50];let idx=0;for(let i=0;i<12;i++){let a=starts[i],b=starts[(i+1)%12];let ok=i===9?md>=a||md<starts[10]:(a<b?md>=a&&md<b:md>=a||md<b);if(ok){idx=i;break}}let deg=(starts[idx]<=md?md-starts[idx]:md+365-starts[idx]);return idx*30+Math.min(29.9,deg*.9856)}
+function cuspMid(a,b){a=norm(a);b=norm(b);let span=b-a;if(span<=0)span+=360;return norm(a+span/2)}
+function planetHouse(model,deg){for(let i=0;i<12;i++){let start=model.houses[i],end=model.houses[(i+1)%12];if(start<end){if(deg>=start&&deg<end)return i+1}else if(deg>=start||deg<end)return i+1}return 1}
+
+function resize(){
+  S.w=innerWidth;S.h=innerHeight;canvas.width=S.w*dpr;canvas.height=S.h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+  S.stars=Array.from({length:300},()=>({x:Math.random()*S.w,y:Math.random()*S.h,r:Math.random()*1.3+.15,a:Math.random()*.44+.04,h:180+Math.random()*170,p:Math.random()*6.28}));
+}
+addEventListener('resize',resize);
+
+function spawn(model,n,base){for(let i=0;i<n;i++){let d=(Number.isFinite(base)?base+i*137.5:Math.random()*360)%360;model.photons.push({d,r:.04+Math.random()*.1,life:0,ttl:3+Math.random()*8,s:.3+Math.random()*1.4,h:hue(d),w:Math.random()*6.28})}if(model.photons.length>900)model.photons.splice(0,model.photons.length-900)}
+function spawnBridge(n){for(let i=0;i<n;i++){let idx=(Math.random()*S.modelA.planets.length)|0;S.bridgePhotons.push({idx,phase:0,speed:.12+Math.random()*.3,h:Math.random()*360,width:.8+Math.random()*1.8})}if(S.bridgePhotons.length>260)S.bridgePhotons.splice(0,S.bridgePhotons.length-260)}
+
+function compute(){
+  let date=$('date').value,time=$('time').value,days=daysSince2000(date,time),hash=placeHash($('place').value),offsetB=+$('offsetB').value;
+  $('offsetOut').textContent=offsetB+'°';
+  const sun=tropicalSunDeg(date);
+  buildModel(S.modelA,sun,days,hash,0,$('intentA').value);
+  buildModel(S.modelB,sun,days,hash,offsetB,$('intentB').value);
+  renderPanels();
+  spawn(S.modelA,160,S.modelA.sunDeg);spawn(S.modelB,160,S.modelB.sunDeg);spawnBridge(34);
+ }
+
+ function buildModel(model,sun,days,hash,offset,intent){
+   model.intent=intent||'';
+   model.sunDeg=norm(sun+offset);
+   model.ascDeg=norm((sun*.72+hash*.017+days*.84+offset*1.35)%360);
+   model.houses=Array.from({length:12},(_,i)=>norm(model.ascDeg+i*30));
+   model.planets=basePlanets.map((p,i)=>{
+      let deg=norm(i===0?model.sunDeg:(model.sunDeg+p[2]+days*p[3]+offset*(i===1?1.8:.6)));
+      return [p[0],p[1],deg,p[3],p[4],planetHouse(model,deg)];
+   });
+ }
+
+ function encode(model,text){
+   model.checksum=0;model.words=String(text||'').toLowerCase().split(/\s+/).filter(Boolean).slice(-120);
+   String(text||'').split('').forEach((ch,i)=>{let c=ch.charCodeAt(0)&255;model.checksum^=c;let deg=(i*137.507+c)%360;for(let k=-3;k<=3;k++)model.learn[(Math.floor(deg+k)+360)%360]=Math.min(1,model.learn[(Math.floor(deg+k)+360)%360]+.012)});
+   model.response=Math.min(1,model.response+.18);model.energy=Math.min(1,model.energy+.14);model.pulse=1;spawn(model,120,model.sunDeg);
+ }
+ function syncModels(){
+   let tA=$('intentA').value||'mémoire'; let tB=$('intentB').value||'réponse';
+   encode(S.modelA,tA+' '+tB); encode(S.modelB,tB+' '+tA); spawnBridge(45); renderPanels();
+ }
+ function resonanceScore(){
+   let score=0; for(let i=0;i<S.modelA.planets.length;i++){let da=S.modelA.planets[i][2],db=S.modelB.planets[i][2],gap=Math.abs(norm(da-db)); gap=Math.min(gap,360-gap); score+=1-gap/180;}
+   score/=S.modelA.planets.length; score=(score*.7 + (avg(S.modelA)+avg(S.modelB))*0.15 + ((S.modelA.response+S.modelB.response)/2)*0.15);
+   return clamp(score,0,1);
+ }
+
+ function renderPanels(){
+   S.resonance=resonanceScore();
+   $('summary').innerHTML=`
+     <div class="dualHeads">
+       <div class="modelCard"><h3>Modèle A</h3><div class="stat">Soleil <b>${signName(S.modelA.sunDeg)}</b></div><div class="stat">Ascendant <b>${signName(S.modelA.ascDeg)}</b></div><div class="small">${S.modelA.intent||'—'}</div></div>
+       <div class="modelCard"><h3>Modèle B</h3><div class="stat">Soleil <b>${signName(S.modelB.sunDeg)}</b></div><div class="stat">Ascendant <b>${signName(S.modelB.ascDeg)}</b></div><div class="small">${S.modelB.intent||'—'}</div></div>
+     </div>
+     <div class="block">
+       <div class="interactLine"><b>Résonance globale :</b> ${Math.floor(S.resonance*100)}%</div>
+       <div class="interactLine"><b>Lecture :</b> le modèle A émet, le modèle B répond, puis les deux se réalimentent par ponts photoniques. L’interaction devient plus forte lorsque les degrés se rapprochent et que les intentions se synchronisent.</div>
+       <div class="badge">Soleils : ${degText(S.modelA.sunDeg)} ↔ ${degText(S.modelB.sunDeg)}</div>
+       <div class="badge">Ascendants : ${degText(S.modelA.ascDeg)} ↔ ${degText(S.modelB.ascDeg)}</div>
+     </div>`;
+
+   $('planetListA').innerHTML=S.modelA.planets.map(p=>`<div class="planet"><div class="leftcol"><span class="glyph" style="color:${p[4]}">${p[1]}</span><div><div>${p[0]}</div><small>${planetMeaning[p[0]]||''}</small></div></div><div><b>${degText(p[2])} ${signName(p[2])}</b><small>M${p[5]}</small></div></div>`).join('');
+   $('planetListB').innerHTML=S.modelB.planets.map(p=>`<div class="planet"><div class="leftcol"><span class="glyph" style="color:${p[4]}">${p[1]}</span><div><div>${p[0]}</div><small>${planetMeaning[p[0]]||''}</small></div></div><div><b>${degText(p[2])} ${signName(p[2])}</b><small>M${p[5]}</small></div></div>`).join('');
+
+   $('houseList').innerHTML=Array.from({length:12},(_,i)=>{
+      let a=S.modelA.houses[i],b=S.modelB.houses[i],gap=Math.abs(norm(a-b));gap=Math.min(gap,360-gap);
+      return `<div class="house"><span class="num">${i+1}</span><div><b>${houseKeywords[i]}</b><br><span class="small">A : ${signGlyph(a)} ${signName(a)} ${degText(a)} • B : ${signGlyph(b)} ${signName(b)} ${degText(b)}<br>Interaction : ${houseTexts[i]}. Écart entre les deux modèles : ${gap.toFixed(1)}°.</span></div></div>`;
+   }).join('');
+ }
+
+ function setStatus(html){$('exportStatus').innerHTML=html;}
+ function bg(t){ctx.fillStyle='#020713';ctx.fillRect(0,0,S.w,S.h);ctx.save();ctx.globalCompositeOperation='lighter';for(const st of S.stars){ctx.fillStyle=`hsla(${st.h},90%,70%,${st.a*(.55+.45*Math.sin(t+st.p))})`;ctx.beginPath();ctx.arc(st.x,st.y,st.r,0,7);ctx.fill()}ctx.restore();}
+ function ringText(cx,cy,R){
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.globalCompositeOperation='source-over';
+
+  for(let i=0;i<12;i++){
+    const deg=i*30+15;
+    const a=ang(deg);
+    const x=Math.cos(a)*R*1.248;
+    const y=Math.sin(a)*R*1.248;
+
+    // Signe zodiacal seul : BLANC, sans carré bleu, sans rond, sans cartouche, sans nom.
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.shadowColor='rgba(120,210,255,.35)';
+    ctx.shadowBlur=2.5;
+    ctx.lineWidth=Math.max(.55,R*.0016);
+    ctx.strokeStyle='rgba(0,5,14,.98)';
+    ctx.fillStyle='rgba(255,255,255,.98)';
+    ctx.font=`400 ${Math.max(30,R*.088)}px "DejaVu Sans","Segoe UI Symbol","Noto Sans Symbols","Arial Unicode MS",serif`;
+    ctx.strokeText(glyphs[i],0,0);
+    ctx.fillText(glyphs[i],0,0);
+    ctx.restore();
+  }
+  ctx.restore();
+}
+  function drawAxisLabel(cx,cy,R,deg,label,sub,color){
+  const a=ang(deg),x=cx+Math.cos(a)*R*1.17,y=cy+Math.sin(a)*R*1.17;
+  ctx.save();
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.globalCompositeOperation='lighter';
+  ctx.shadowColor=color;
+  ctx.shadowBlur=18;
+  ctx.lineWidth=1.2;
+  ctx.strokeStyle='rgba(0,0,0,.88)';
+  ctx.fillStyle=color;
+  ctx.font=`800 ${Math.max(12,R*.040)}px Inter,Arial,sans-serif`;
+  ctx.strokeText(label,x,y-R*.025);
+  ctx.fillText(label,x,y-R*.025);
+  ctx.shadowBlur=8;
+  ctx.fillStyle='rgba(235,248,255,.94)';
+  ctx.font=`700 ${Math.max(8,R*.024)}px Inter,Arial,sans-serif`;
+  ctx.strokeText(sub,x,y+R*.032);
+  ctx.fillText(sub,x,y+R*.032);
+  ctx.restore();
+}
+function wheel(cx,cy,R,model,t){
+ ctx.save();
+ ctx.translate(cx,cy);
+ ctx.globalCompositeOperation='screen';
+
+ for(let i=0;i<12;i++){
+   let a=ang(i*30);
+   ctx.strokeStyle='rgba(210,245,255,.48)';
+   ctx.lineWidth=1.05;
+   ctx.beginPath();
+   ctx.moveTo(Math.cos(a)*R*.82,Math.sin(a)*R*.82);
+   ctx.lineTo(Math.cos(a)*R*1.16,Math.sin(a)*R*1.16);
+   ctx.stroke();
+ }
+
+ for(let r of [1.20,1.12,1.03,.90,.75,.57]){
+   ctx.strokeStyle=r>1?'rgba(72,245,255,.25)':'rgba(72,245,255,.13)';
+   ctx.lineWidth=r>1?1.9:.7;
+   ctx.beginPath();
+   ctx.arc(0,0,R*r,0,7);
+   ctx.stroke();
+ }
+
+ // degrés lisibles, fins
+ for(let d=0;d<360;d++){
+   let a=ang(d),maj=d%10===0,mid=d%5===0;
+   let from=maj?R*.905:(mid?R*.922:R*.936);
+   let to=maj?R*1.000:(mid?R*.985:R*.970);
+   ctx.strokeStyle=maj?`hsla(${hue(d)},95%,72%,.62)`:(mid?'rgba(220,255,255,.22)':'rgba(220,255,255,.12)');
+   ctx.lineWidth=maj?.95:(mid?.55:.28);
+   ctx.beginPath();
+   ctx.moveTo(Math.cos(a)*from,Math.sin(a)*from);
+   ctx.lineTo(Math.cos(a)*to,Math.sin(a)*to);
+   ctx.stroke();
+   if(maj&&d%30!==0){
+     ctx.save();
+     ctx.rotate(a);
+     ctx.translate(R*.845,0);
+     ctx.rotate(Math.PI/2);
+     ctx.textAlign='center';
+     ctx.textBaseline='middle';
+     ctx.lineWidth=.8;
+     ctx.strokeStyle='rgba(0,0,0,.78)';
+     ctx.fillStyle='rgba(235,248,255,.78)';
+     ctx.font=`700 ${Math.max(7,R*.020)}px Inter,Arial,sans-serif`;
+     ctx.strokeText(String(d),0,0);
+     ctx.fillText(String(d),0,0);
+     ctx.restore();
+   }
+ }
+
+ const romans=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+ for(let i=0;i<12;i++){
+   let a=ang(model.houses[i]),isAsc=i===0,isMc=i===9;
+   ctx.strokeStyle=isAsc?'rgba(80,245,255,.98)':(isMc?'rgba(255,215,90,.98)':'rgba(255,215,90,.36)');
+   ctx.lineWidth=isAsc||isMc?2.15:1.0;
+   ctx.beginPath();
+   ctx.moveTo(Math.cos(a)*R*.25,Math.sin(a)*R*.25);
+   ctx.lineTo(Math.cos(a)*R*1.155,Math.sin(a)*R*1.155);
+   ctx.stroke();
+
+   let m=ang(cuspMid(model.houses[i],model.houses[(i+1)%12]));
+   let x=Math.cos(m)*R*.665,y=Math.sin(m)*R*.665;
+   ctx.textAlign='center';
+   ctx.textBaseline='middle';
+   ctx.lineWidth=.8;
+   ctx.strokeStyle='rgba(0,0,0,.86)';
+   ctx.fillStyle='rgba(255,238,170,.86)';
+   ctx.font=`700 ${Math.max(7,R*.020)}px Georgia,'Times New Roman',serif`;
+   ctx.strokeText(romans[i],x,y);
+   ctx.fillText(romans[i],x,y);
+ }
+
+ ctx.restore();
+
+ ringText(cx,cy,R);
+
+ drawAxisLabel(cx,cy,R,model.ascDeg,'ASC',`${signName(model.ascDeg)} ${degText(model.ascDeg)}`,'rgba(80,245,255,.98)');
+ drawAxisLabel(cx,cy,R,norm(model.ascDeg+180),'DESC',`${signName(norm(model.ascDeg+180))} ${degText(norm(model.ascDeg+180))}`,'rgba(210,245,255,.88)');
+ const mcDeg=model.houses[9]!==undefined?model.houses[9]:norm(model.ascDeg+270);
+ const icDeg=norm(mcDeg+180);
+ drawAxisLabel(cx,cy,R,mcDeg,'MC',`${signName(mcDeg)} ${degText(mcDeg)}`,'rgba(255,215,90,.98)');
+ drawAxisLabel(cx,cy,R,icDeg,'IC',`${signName(icDeg)} ${degText(icDeg)}`,'rgba(255,231,160,.86)');
+} function chromaVortex(cx,cy,R,t,shift){ctx.save();ctx.globalCompositeOperation='lighter';ctx.translate(cx,cy);ctx.rotate(t*.035+shift*.004);for(let d=0;d<360;d+=1.2){let a=ang(d+Math.sin(t*.4+d*.03+shift)*4),h=hue(d+shift*2),len=R*(.1+.66*(.7+.3*Math.sin(d*.09+t+shift)));ctx.strokeStyle=`hsla(${h},100%,58%,.20)`;ctx.lineWidth=.6;ctx.beginPath();ctx.moveTo(0,0);for(let i=1;i<=34;i++){let n=i/34,aa=a+n*n*1.9,rr=len*n;ctx.lineTo(Math.cos(aa)*rr,Math.sin(aa)*rr)}ctx.stroke()}ctx.restore()}
+ function mandala(cx,cy,R,t,shift){ctx.save();ctx.globalCompositeOperation='lighter';ctx.translate(cx,cy);for(let layer=0;layer<5;layer++){ctx.rotate((layer%2?-1:1)*t*(.025+layer*.006)+shift*.001);let lobes=12+layer*6,rad=R*(.30+layer*.055);for(let l=0;l<lobes;l++){let sh=l/lobes*7;ctx.save();ctx.rotate(sh);ctx.beginPath();for(let i=0;i<=90;i++){let n=i/90,a=n*7,rr=rad*(.22+.78*Math.sin(a*2)**2);let x=Math.cos(a)*rr,y=Math.sin(a)*rr*.35;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.strokeStyle=`hsla(${hue(l*360/lobes+layer*45+t*20+shift)},100%,70%,${.07+layer*.022})`;ctx.lineWidth=.6;ctx.stroke();ctx.restore()}}let g=ctx.createRadialGradient(0,0,0,0,0,R*.18);g.addColorStop(0,'rgba(255,255,255,.50)');g.addColorStop(.25,'rgba(255,215,90,.25)');g.addColorStop(.7,'rgba(72,245,255,.06)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,R*.2,0,7);ctx.fill();ctx.restore()}
+ function photons(model,cx,cy,R,t){ctx.save();ctx.globalCompositeOperation='screen';for(let i=model.photons.length-1;i>=0;i--){let p=model.photons[i];p.life+=.012*p.s;if(p.life>p.ttl){model.photons.splice(i,1);continue}p.d=(p.d+.22*p.s)%360;p.r=Math.min(1,p.r+.001*p.s);let a=ang(p.d+Math.sin(t*4+p.w)*8),rr=R*(.12+p.r*.9),x=cx+Math.cos(a)*rr,y=cy+Math.sin(a)*rr;ctx.fillStyle=`hsla(${hue(p.h+t*20)},100%,75%,${.5*(1-p.life/p.ttl)})`;ctx.beginPath();ctx.arc(x,y,1.2+p.r*2.5,0,7);ctx.fill()}ctx.restore()}
+ function arcToPlanet(cx,cy,R,p,t){
+  let deg=p[2],a=ang(deg),endR=R*1.105,ex=cx+Math.cos(a)*endR,ey=cy+Math.sin(a)*endR;
+  let startR=R*.16,sx=cx+Math.cos(a+t*.08)*startR,sy=cy+Math.sin(a+t*.08)*startR;
+  let bend=ang(deg+32*Math.sin(deg*.025+t*.35));
+  let c1x=cx+Math.cos(bend)*R*.54,c1y=cy+Math.sin(bend)*R*.54;
+  ctx.save();ctx.globalCompositeOperation='lighter';
+  for(let k=0;k<3;k++){
+    ctx.beginPath();ctx.moveTo(sx,sy);
+    ctx.bezierCurveTo(c1x+Math.sin(t*1.4+k)*R*.035,c1y+Math.cos(t*1.4+k)*R*.035,cx+Math.cos(a-.18)*R*.80,cy+Math.sin(a-.18)*R*.80,ex,ey);
+    ctx.strokeStyle=k===0?p[4]:`hsla(${hue(deg+k*14)},100%,70%,${.060-k*.012})`;
+    ctx.globalAlpha=k===0?.55:.34;
+    ctx.lineWidth=k===0?1.15:2.0+k*.45;
+    ctx.stroke();
+  }
+  ctx.globalAlpha=1;ctx.restore();
+}
+  function planetsDraw(model,cx,cy,R,t){
+  model.planets.forEach(p=>arcToPlanet(cx,cy,R,p,t));
+  ctx.save();
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+
+  model.planets.forEach((p,i)=>{
+    let a=ang(p[2]),lane=1.018+(i%2)*.074,x=cx+Math.cos(a)*R*lane,y=cy+Math.sin(a)*R*lane,h=p[5];
+
+    // Trait radial très fin : repère discret, pas de rond décoratif.
+    ctx.globalCompositeOperation='source-over';
+    ctx.strokeStyle='rgba(68,190,255,.46)';
+    ctx.lineWidth=.75;
+    ctx.beginPath();
+    ctx.moveTo(cx+Math.cos(a)*R*.89,cy+Math.sin(a)*R*.89);
+    ctx.lineTo(x,y);
+    ctx.stroke();
+
+    // Symbole planète seul : fin, net, bleu/blanc, sans cercle autour.
+    ctx.shadowColor='rgba(70,200,255,.78)';
+    ctx.shadowBlur=3;
+    ctx.lineWidth=Math.max(.55,R*.0015);
+    ctx.strokeStyle='rgba(0,8,18,.96)';
+    ctx.fillStyle='rgba(245,252,255,.98)';
+    ctx.font=`400 ${Math.max(22,R*.078)}px "DejaVu Sans","Segoe UI Symbol","Noto Sans Symbols","Arial Unicode MS",serif`;
+    ctx.strokeText(p[1],x,y);
+    ctx.fillText(p[1],x,y);
+
+    // Maison et degré : petits, lisibles, sans cartouche ni rond.
+    ctx.shadowBlur=3;
+    ctx.shadowColor='rgba(72,205,255,.55)';
+    ctx.lineWidth=.55;
+    ctx.strokeStyle='rgba(0,8,18,.95)';
+    ctx.fillStyle='rgba(168,228,255,.94)';
+    ctx.font=`700 ${Math.max(7,R*.020)}px Inter,Segoe UI,Arial,sans-serif`;
+    ctx.strokeText('M'+h,x,y+R*.070);
+    ctx.fillText('M'+h,x,y+R*.070);
+
+    ctx.shadowBlur=0;
+    ctx.fillStyle='rgba(225,246,255,.78)';
+    ctx.font=`600 ${Math.max(6,R*.017)}px Inter,Segoe UI,Arial,sans-serif`;
+    ctx.fillText(degText(p[2]),x,y-R*.070);
+  });
+  ctx.restore();
+} function brain(model,cx,cy,R,t){if(!S.showBrain)return;ctx.save();ctx.globalCompositeOperation='screen';ctx.strokeStyle='rgba(200,245,255,.20)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx,cy-R*.42);ctx.bezierCurveTo(cx-R*.38,cy-R*.56,cx-R*.58,cy-R*.22,cx-R*.52,cy+R*.14);ctx.bezierCurveTo(cx-R*.48,cy+R*.42,cx-R*.17,cy+R*.50,cx,cy+R*.42);ctx.moveTo(cx,cy-R*.42);ctx.bezierCurveTo(cx+R*.38,cy-R*.56,cx+R*.58,cy-R*.22,cx+R*.52,cy+R*.14);ctx.bezierCurveTo(cx+R*.48,cy+R*.42,cx+R*.17,cy+R*.50,cx,cy+R*.42);ctx.stroke();for(let i=0;i<82;i++){let a=i*2.399+t*.12+model.sunDeg*.01,rr=R*(.05+.42*((i%37)/37));let x=cx+Math.cos(a)*rr,y=cy+Math.sin(a)*rr*.75;let v=model.learn[i%360];ctx.fillStyle=`hsla(${180+v*140},100%,70%,${.11+v*.42})`;ctx.beginPath();ctx.arc(x,y,1+v*3.1,0,7);ctx.fill();if(i%3===0){ctx.strokeStyle=`hsla(${180+v*140},100%,70%,${.04+v*.12})`;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);ctx.stroke()}}ctx.fillStyle='rgba(120,255,180,.9)';ctx.font=`800 ${Math.max(8,R*.024)}px ui-monospace`;ctx.textAlign='center';ctx.fillText(model.label.toUpperCase()+' • CHECKSUM '+model.checksum+' • MOTS '+model.words.length,cx,cy+R*.57);ctx.restore()}
+ function bridgeDraw(cx1,cy1,R1,cx2,cy2,R2,t){
+   if(!S.showBridge)return;
+   ctx.save();
+   ctx.globalCompositeOperation='lighter';
+   ctx.lineCap='round';
+   ctx.lineJoin='round';
+
+   const n=S.modelA.planets.length;
+   const wavePoints=(ax,ay,bx,by,idx,phase=0)=>{
+     const pts=[];
+     const dx=bx-ax, dy=by-ay;
+     const len=Math.hypot(dx,dy)||1;
+     const nx=-dy/len, ny=dx/len;
+     const amp=8+Math.sin(t*.55+idx*.73)*2.5;
+     const sag=Math.sin(t*.35+idx*.41)*7;
+     for(let s=0;s<=1.0001;s+=1/52){
+       const ease=s*s*(3-2*s);
+       const baseX=ax+dx*ease;
+       const baseY=ay+dy*ease;
+       const wave=Math.sin(s*Math.PI*2.0 + t*1.15 + idx*.62)*amp*Math.sin(Math.PI*s);
+       const bow=Math.sin(Math.PI*s)*sag;
+       pts.push({x:baseX+nx*wave, y:baseY+ny*wave+bow});
+     }
+     return pts;
+   };
+   const pointOn=(pts,q)=>{
+     q=Math.max(0,Math.min(.999,q));
+     const f=q*(pts.length-1);
+     const i=Math.floor(f), r=f-i;
+     const a=pts[i], b=pts[Math.min(i+1,pts.length-1)];
+     return {x:a.x+(b.x-a.x)*r, y:a.y+(b.y-a.y)*r};
+   };
+
+   // Les flux partent exactement du bout des arcs ondulatoires planétaires :
+   // extrémité de l'arc coloré du modèle A -> extrémité de l'arc coloré du modèle B.
+   for(let i=0;i<n;i++){
+     const pa=S.modelA.planets[i];
+     const pb=S.modelB.planets[i];
+     const col=pa[4]||`hsla(${hue(i*36)},100%,70%,1)`;
+     const aa=ang(pa[2]);
+     const ab=ang(pb[2]);
+     const ax=cx1+Math.cos(aa)*R1*1.105;
+     const ay=cy1+Math.sin(aa)*R1*1.105;
+     const bx=cx2+Math.cos(ab)*R2*1.105;
+     const by=cy2+Math.sin(ab)*R2*1.105;
+     const pts=wavePoints(ax,ay,bx,by,i);
+
+     ctx.globalAlpha=.46;
+     ctx.strokeStyle=col;
+     ctx.lineWidth=1.18;
+     ctx.beginPath();
+     pts.forEach((pt,k)=>k?ctx.lineTo(pt.x,pt.y):ctx.moveTo(pt.x,pt.y));
+     ctx.stroke();
+
+     ctx.globalAlpha=.10;
+     ctx.lineWidth=3.4;
+     ctx.beginPath();
+     pts.forEach((pt,k)=>k?ctx.lineTo(pt.x,pt.y):ctx.moveTo(pt.x,pt.y));
+     ctx.stroke();
+
+     // Repères d'extrémité minuscules : pas de carré, juste le départ/arrivée du flux.
+     ctx.globalAlpha=.80;
+     ctx.fillStyle=col;
+     ctx.beginPath(); ctx.arc(ax,ay,1.9,0,Math.PI*2); ctx.fill();
+     ctx.beginPath(); ctx.arc(bx,by,1.9,0,Math.PI*2); ctx.fill();
+   }
+
+   // Photons : ils naissent au point de départ de la vague, puis glissent sur toute l'onde.
+   for(let i=S.bridgePhotons.length-1;i>=0;i--){
+     const p=S.bridgePhotons[i];
+     p.phase=(p.phase+.0028+p.speed*.0032*(1+S.resonance))%1;
+     const idx=p.idx%n;
+     const pa=S.modelA.planets[idx];
+     const pb=S.modelB.planets[idx];
+     const col=pa[4]||`hsla(${hue(idx*36)},100%,70%,1)`;
+     const aa=ang(pa[2]);
+     const ab=ang(pb[2]);
+     const ax=cx1+Math.cos(aa)*R1*1.105;
+     const ay=cy1+Math.sin(aa)*R1*1.105;
+     const bx=cx2+Math.cos(ab)*R2*1.105;
+     const by=cy2+Math.sin(ab)*R2*1.105;
+     const pts=wavePoints(ax,ay,bx,by,idx);
+     const q=p.phase;
+     const pos=pointOn(pts,q);
+
+     const glow=ctx.createRadialGradient(pos.x,pos.y,0,pos.x,pos.y,5.8+p.width);
+     glow.addColorStop(0,'rgba(255,255,255,.94)');
+     glow.addColorStop(.25,col);
+     glow.addColorStop(1,'rgba(0,0,0,0)');
+     ctx.globalAlpha=.78;
+     ctx.fillStyle=glow;
+     ctx.beginPath();
+     ctx.arc(pos.x,pos.y,1.6+p.width*.60,0,Math.PI*2);
+     ctx.fill();
+   }
+   ctx.globalAlpha=1;
+   ctx.restore();
+ }
+  function frame(now){let dt=Math.min(.05,(now-S.last)/1000||.016);S.last=now;if(S.run)S.t+=dt;let t=S.t;S.modelA.response*=.995;S.modelB.response*=.995;S.modelA.energy*=.995;S.modelB.energy*=.995;S.modelA.pulse*=.98;S.modelB.pulse*=.98;bg(t);let isImm=app.classList.contains('immersive'); let cx1=isImm?S.w*.31:S.w*.33, cx2=isImm?S.w*.69:S.w*.67, cy=isImm?S.h*.51:S.h*.54; if(S.w<980){cx1=S.w*.5;cx2=S.w*.5;cy=S.h*.60} let R=Math.min(Math.max(160,Math.min((S.w-700)/2,S.h*.28)),230); if(isImm&&S.w>=980)R=Math.min(Math.max(230,Math.min(S.w*.255,S.h*.385)),330); if(S.w<980)R=Math.min(S.w,S.h)*.27; chromaVortex(cx1,cy,R,t,0); chromaVortex(cx2,cy,R,t,60); wheel(cx1,cy,R,S.modelA,t); wheel(cx2,cy,R,S.modelB,t); mandala(cx1,cy,R,t,0); mandala(cx2,cy,R,t,60); bridgeDraw(cx1,cy,R,cx2,cy,R,t); planetsDraw(S.modelA,cx1,cy,R,t); planetsDraw(S.modelB,cx2,cy,R,t); brain(S.modelA,cx1,cy,R,t); brain(S.modelB,cx2,cy,R,t); photons(S.modelA,cx1,cy,R,t); photons(S.modelB,cx2,cy,R,t); $('memA').textContent=Math.floor(avg(S.modelA)*100)+'%'; $('memB').textContent=Math.floor(avg(S.modelB)*100)+'%'; $('respA').textContent=Math.floor(S.modelA.response*100)+'%'; $('respB').textContent=Math.floor(S.modelB.response*100)+'%'; $('linkFlux').textContent=S.bridgePhotons.length; $('resonance').textContent=Math.floor(resonanceScore()*100)+'%'; if(S.run&&Math.random()<.04){spawn(S.modelA,2);spawn(S.modelB,2); if(Math.random()<.20)spawnBridge(1)} requestAnimationFrame(frame)}
+ function interact(x,y){let isImm=app.classList.contains('immersive'); let cx1=isImm?S.w*.31:S.w*.33,cx2=isImm?S.w*.69:S.w*.67,cy=isImm?S.h*.51:S.h*.54; if(S.w<980){cx1=S.w*.5;cx2=S.w*.5} let target=Math.abs(x-cx1)<=Math.abs(x-cx2)?S.modelA:S.modelB; let cx=target===S.modelA?cx1:cx2; let deg=(Math.atan2(y-cy,x-cx)*180/Math.PI+90+360)%360; target.energy=Math.min(1,target.energy+.08); target.response=Math.min(1,target.response+.05); for(let k=-8;k<=8;k++)target.learn[(Math.floor(deg+k)+360)%360]=Math.min(1,target.learn[(Math.floor(deg+k)+360)%360]+.018); spawn(target,24,deg); if(Math.random()<.65)spawnBridge(8)}
+ function fullSafe(){try{if(document.fullscreenElement){document.exitFullscreen&&document.exitFullscreen()}else if(document.documentElement.requestFullscreen){document.documentElement.requestFullscreen().catch(()=>app.classList.toggle('immersive'))}else app.classList.toggle('immersive')}catch(e){app.classList.toggle('immersive')}}
+ function captureGifFrame(size=900){let out=document.createElement('canvas');out.width=size;out.height=Math.round(size*0.62);let c=out.getContext('2d');let bg=c.createLinearGradient(0,0,size,out.height);bg.addColorStop(0,'#020713');bg.addColorStop(.52,'#061321');bg.addColorStop(1,'#010208');c.fillStyle=bg;c.fillRect(0,0,size,out.height);c.drawImage(canvas,0,0,canvas.width,canvas.height,0,0,size,out.height);c.fillStyle='rgba(239,250,255,.95)';c.textAlign='center';c.textBaseline='bottom';c.font='800 18px Arial';c.fillText('HELIOS ASTRO • DUAL INTERACTIF',size/2,out.height-16);return out.toDataURL('image/png')}
+ function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+ function nextPaint(){return new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))}
+ async function exportGIF(){if(S.capturingGif)return;if(!window.gifshot){setStatus('<span style="color:#ff9d9d">Librairie GIF indisponible. Vérifie internet ou héberge gifshot localement.</span>');return}S.capturingGif=true;let btn=$('gif');btn.disabled=true;let frames=[],total=32;setStatus('<strong>Capture GIF en cours...</strong> Ne ferme pas l’onglet.');try{for(let i=0;i<total;i++){await nextPaint();frames.push(captureGifFrame(900));if(i%6===0)setStatus('<strong>Capture GIF :</strong> '+Math.round((i+1)/total*100)+' %');await sleep(65)}setStatus('<strong>Encodage GIF...</strong> Génération du fichier animé.');window.gifshot.createGIF({images:frames,gifWidth:900,gifHeight:560,interval:.08,numWorkers:2,sampleInterval:10,progressCallback(p){setStatus('<strong>Encodage GIF :</strong> '+Math.round(p*100)+' %')}},obj=>{S.capturingGif=false;btn.disabled=false;if(!obj.error&&obj.image){let a=document.createElement('a');a.href=obj.image;a.download='heliosastro-dual-interactif.gif';a.click();setStatus('<strong>GIF exporté.</strong> Animation générée avec succès.')}else setStatus('<span style="color:#ff9d9d">Erreur pendant l’export GIF. Réessaie avec une fenêtre plus petite.</span>')})}catch(err){S.capturingGif=false;btn.disabled=false;setStatus('<span style="color:#ff9d9d">Export GIF interrompu : '+String(err&&err.message||err)+'</span>')}}
+
+ canvas.addEventListener('pointerdown',e=>interact(e.clientX,e.clientY)); canvas.addEventListener('pointermove',e=>{if(e.buttons)interact(e.clientX,e.clientY)});
+ bind('calc','click',compute); bind('encodeA','click',()=>{encode(S.modelA,$('intentA').value);renderPanels()}); bind('encodeB','click',()=>{encode(S.modelB,$('intentB').value);renderPanels()}); bind('sync','click',syncModels); bind('pause','click',()=>{S.run=!S.run;$('pause').textContent=S.run?'Pause':'Play'}); bind('burst','click',()=>{spawn(S.modelA,120,S.modelA.sunDeg);spawn(S.modelB,120,S.modelB.sunDeg);spawnBridge(26)}); bind('bridge','click',()=>S.showBridge=!S.showBridge); bind('brain','click',()=>S.showBrain=!S.showBrain); bind('immersive','click',()=>{app.classList.toggle('immersive');$('immersive').textContent=app.classList.contains('immersive')?'Sortir':'Immersion'}); bind('full','click',fullSafe); bind('png','click',()=>{let a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download='heliosastro-dual-interactif.png';a.click();setStatus('<strong>PNG exporté.</strong> Image statique téléchargée.')}); bind('gif','click',exportGIF); bind('offsetB','input',()=>{ $('offsetOut').textContent=$('offsetB').value+'°'; compute(); });
+ addEventListener('keydown',e=>{let tag=(e.target&&e.target.tagName||'').toLowerCase();if(['input','textarea'].includes(tag))return;if(e.key===' '){e.preventDefault();$('pause').click()}if(e.key.toLowerCase()==='f')$('full').click();if(e.key.toLowerCase()==='b')$('burst').click();if(e.key.toLowerCase()==='s')$('sync').click()});
+ resize(); compute(); encode(S.modelA,$('intentA').value); encode(S.modelB,$('intentB').value); spawn(S.modelA,180,S.modelA.sunDeg); spawn(S.modelB,180,S.modelB.sunDeg); spawnBridge(42); renderPanels(); requestAnimationFrame(frame);
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',startApp,{once:true});}else{startApp();}
+})();
+</script>
+</body>
+</html>
